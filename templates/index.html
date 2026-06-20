@@ -37,6 +37,8 @@
   }
 </style>
 
+<button id="showAll">Show all</button>
+<button id="hideAll">Hide all</button>
 <div id="annotated">
 
 
@@ -44,7 +46,7 @@
 
 
 <div
-  style="padding: 50px; height: 40%; display: flex;">
+  style="padding: 50px; height: 40%">
 
   <textarea id="chinesetext" name="chinesetext" placeholder="Enter Chinese text...">
 人之初，性本善，性相近，習相遠；
@@ -60,7 +62,10 @@
 融四歲，能讓梨，悌於長，宜先知。
   </textarea>
 
-  <button id="submit" name="submit">Submit</button>
+  <div style="display: flex;">
+
+  <button id="submit" name="submit" style="width: 100%">Submit</button>
+    </div>
 </div>
 
 
@@ -98,6 +103,18 @@
       }
     }
   });
+
+  document.getElementById("showAll").addEventListener("click", (e) => {
+    const rubies = document.querySelectorAll("rt");
+    Array(...rubies).forEach((rt) => {rt.classList.add("visible")})
+  })
+
+  document.getElementById("hideAll").addEventListener("click", (e) => {
+    const rubies = document.querySelectorAll("rt");
+    Array(...rubies).forEach((rt) => {rt.classList.remove("visible")})
+  })
+
+
 </script>
 
 
