@@ -4,6 +4,7 @@ from operator import itemgetter
 import pycantonese
 import uvicorn
 from fastapi import FastAPI, Request, Response
+from fastapi.staticfiles import StaticFiles
 from starlette.responses import HTMLResponse
 from starlette.templating import Jinja2Templates
 from streamerate import stream
@@ -12,6 +13,7 @@ from pypinyin import pinyin, Style
 
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
 def character_to_jyutping(character: str) -> tuple[str, str]:

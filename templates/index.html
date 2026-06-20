@@ -3,39 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <title>Jyutruby</title>
+  <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-
-<style>
-  #annotated {
-    font-size: 24px;
-    padding: 50px;
-    white-space: pre-wrap;
-  }
-
-  #annotated ruby {
-    font-family: "Kaiti SC", TH-Khaai-TP0, TH-Khaai-TP2, TH-Feon-A, 楷体, KaiTi, 楷体_GB2312, KaiTi_GB2312, FandolKai, 华文楷体, STKaiti, TH-Khaai-PP0, TH-Khaai-PP2, Kai, "Kaiti TC", BiauKai, "AR PL UKai CN", 標楷體, DFKai-SB, "AR PL UKai HK", "AR PL UKai TW", 全字庫正楷體, TW-Kai, EUDCKAI, cursive;
-  }
-
-  #annotated rt {
-    padding-left: 0.2em;
-    padding-right: 0.2em;
-    font-size: 0; /* hidden by default */
-    font-family: sans-serif;
-  }
-
-  #annotated rt.visible {
-    font-size: 10pt;
-  }
-
-  #chinesetext {
-    font-size: large;
-    font-family: "Kaiti SC", TH-Khaai-TP0, TH-Khaai-TP2, TH-Feon-A, 楷体, KaiTi, 楷体_GB2312, KaiTi_GB2312, FandolKai, 华文楷体, STKaiti, TH-Khaai-PP0, TH-Khaai-PP2, Kai, "Kaiti TC", BiauKai, "AR PL UKai CN", 標楷體, DFKai-SB, "AR PL UKai HK", "AR PL UKai TW", 全字庫正楷體, TW-Kai, EUDCKAI, cursive;
-    width: 100%;
-    field-sizing: content;
-    min-height: 4rem; /* Optional: prevents default single-line height */
-  }
-</style>
 
 <button id="showAll">Show all</button>
 <button id="hideAll">Hide all</button>
@@ -69,53 +39,7 @@
 </div>
 
 
-<script>
-  const chinesetext = document.getElementById("chinesetext");
-  const submit = document.getElementById("submit");
-  const annotated = document.getElementById("annotated");
-
-  function displayWithRuby(char, jyut) {
-    if (char === '\n') {
-      return '<br>';
-    }
-    if (jyut) {
-      return `<ruby class="clickable">${char}<rt>${jyut}</rt></ruby>`;
-    } else
-      return char;
-  }
-
-
-  submit.addEventListener("click", async () => {
-    const query = encodeURIComponent(chinesetext.value);  // preserve line breaks
-    const response = await fetch("/jyutping?chinese=" + query);
-    const data = await response.json();
-    const rubies = data.map((data) => displayWithRuby(...data));
-
-    annotated.innerHTML = rubies.join("");
-  });
-
-  annotated.addEventListener("click", (e) => {
-    const ruby = e.target.closest("ruby.clickable");
-    if (ruby) {
-      const rt = ruby.querySelector("rt");
-      if (rt) {
-        rt.classList.toggle("visible");
-      }
-    }
-  });
-
-  document.getElementById("showAll").addEventListener("click", (e) => {
-    const rubies = document.querySelectorAll("rt");
-    Array(...rubies).forEach((rt) => {rt.classList.add("visible")})
-  })
-
-  document.getElementById("hideAll").addEventListener("click", (e) => {
-    const rubies = document.querySelectorAll("rt");
-    Array(...rubies).forEach((rt) => {rt.classList.remove("visible")})
-  })
-
-
-</script>
+<script src="/static/script.js"></script>
 
 
 </body>
