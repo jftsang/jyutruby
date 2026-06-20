@@ -1,3 +1,4 @@
+import string
 from operator import itemgetter
 
 import pycantonese
@@ -17,6 +18,12 @@ def character_to_jyutping(character: str) -> tuple[str, str]:
     a single character, and is guaranteed to return a value even for
     non-Chinese characters as well as special characters like \n.
     """
+
+    # Avoid silly edge cases like the English character `e` or Arabic
+    # numerals like `2` being interpreted and jyutpingised.
+    if character in string.printable:
+        return (character, "")
+
     charjyut: list[tuple[str, str | None]] = pycantonese.characters_to_jyutping(
         character
     )
