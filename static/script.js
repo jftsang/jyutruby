@@ -1,4 +1,4 @@
-import {h, app} from "./hyperapp.js";
+import {h, app, text} from "./hyperapp.js";
 
 const initialState = {
   inputText: `人之初，性本善，性相近，習相遠；
@@ -54,7 +54,7 @@ const displayWithRuby = (char, jyut, index, isVisible) => {
   if (jyut) {
     return h('ruby', {
       class: 'clickable',
-      onclick: ['toggleRuby', index]
+      onclick: [actions.toggleRuby, index]
     }, [
       h('rt', {
         class: isVisible ? 'visible' : ''
@@ -66,25 +66,30 @@ const displayWithRuby = (char, jyut, index, isVisible) => {
 };
 
 function view(state) {
-  const showAll = h('button', {onclick: 'showAll'}, 'Show all');
-  const hideAll = h('button', {onclick: 'hideAll'}, 'Hide all');
+  const showAll = h('button', {onclick: actions.showAll}, [text('Show all')]);
+  const hideAll = h('button', {onclick: actions.hideAll}, [text('Hide all')]);
 
   const inputForm = h('div', {style: {padding: "50px", height: "40%"}}, [
-      h('textarea', {
-        id: 'chinesetext',
-        name: 'chinesetext',
-        placeholder: 'Enter Chinese text...',
-        oninput: ['setInputText']
-      }, state.inputText),
-      h('div', {style: {display: "flex"}}, [
+    h('textarea', {
+      id: 'chinesetext',
+      name: 'chinesetext',
+      placeholder: 'Enter Chinese text...',
+      oninput: [actions.setInputText]
+    }, [
+      text(state.inputText)
+    ]),
+    h('div', {style: {display: "flex"}}, [
         h('button', {
-          id: 'submit',
-          name: 'submit',
-          style: {width: "100%"},
-          onclick: 'submit'
-        }, 'Submit')
-      ])
-    ]);
+            id: 'submit',
+            name: 'submit',
+            style: {width: "100%"},
+            onclick: actions.submit
+          },
+          [text('Submit')]
+        )
+      ]
+    )
+  ])
 
   return h('div', {}, [
     h('div', {style: {display: "flex", gap: "10px", marginBottom: "20px",}}, [
@@ -95,7 +100,7 @@ function view(state) {
         displayWithRuby(char, jyut, index, state.visibleRubies.has(index))
       )
     ),
-   inputForm,
+    inputForm,
   ]);
 }
 
