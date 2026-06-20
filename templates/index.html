@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Jyutruby</title>
+</head>
+<body>
+
+<style>
+  #annotated {
+    font-size: larger;
+    font-family: "Kaiti SC", TH-Khaai-TP0, TH-Khaai-TP2, TH-Feon-A, 楷体, KaiTi, 楷体_GB2312, KaiTi_GB2312, FandolKai, 华文楷体, STKaiti, TH-Khaai-PP0, TH-Khaai-PP2, Kai, "Kaiti TC", BiauKai, "AR PL UKai CN", 標楷體, DFKai-SB, "AR PL UKai HK", "AR PL UKai TW", 全字庫正楷體, TW-Kai, EUDCKAI, cursive;
+    padding: 50px;
+  }
+
+  #chinesetext {
+    font-size: large;
+    font-family: "Kaiti SC", TH-Khaai-TP0, TH-Khaai-TP2, TH-Feon-A, 楷体, KaiTi, 楷体_GB2312, KaiTi_GB2312, FandolKai, 华文楷体, STKaiti, TH-Khaai-PP0, TH-Khaai-PP2, Kai, "Kaiti TC", BiauKai, "AR PL UKai CN", 標楷體, DFKai-SB, "AR PL UKai HK", "AR PL UKai TW", 全字庫正楷體, TW-Kai, EUDCKAI, cursive;
+    width: 100%;
+    field-sizing: content;
+    min-height: 4rem; /* Optional: prevents default single-line height */
+  }
+</style>
+
+<div id="annotated">
+
+
+</div>
+
+
+<div
+  style="padding: 50px; height: 40%; display: flex;">
+
+  <textarea id="chinesetext" name="chinesetext" placeholder="Enter Chinese text...">
+人之初，性本善，性相近，習相遠；
+苟不教，性乃遷，教之道，貴以專。  Hello, world.
+昔孟母，擇鄰處，子不學，斷機杼；
+竇燕山，有義方，教五子，名俱揚。
+養不教，父之過；教不嚴，師之惰。
+子不學，非所宜；幼不學，老何為？
+玉不琢，不成器；人不學，不知理；
+為人子，方少時，親師友，習禮儀。
+香九齡，能溫席，孝於親，所當執；
+融四歲，能讓梨，悌於長，宜先知。
+  </textarea>
+
+  <button id="submit" name="submit">Submit</button>
+</div>
+
+
+<script>
+  const chinesetext = document.getElementById("chinesetext");
+  const submit = document.getElementById("submit");
+  const annotated = document.getElementById("annotated");
+
+  function displayWithRuby(char, jyut) {
+    return `<span>${char}</span>`;
+  }
+
+
+  submit.addEventListener("click", async () => {
+    const query = encodeURIComponent(chinesetext.value);  // preserve line breaks
+    const response = await fetch("/transcribe?chinese=" + query);
+    const data = await response.json();
+    const rubies = data.map((data) => displayWithRuby(...data));
+
+    annotated.innerHTML = rubies.join("");
+  });
+</script>
+
+
+</body>
+</html>

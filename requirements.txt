@@ -1,0 +1,4 @@
+pycantonese
+cnocr
+ruff
+fastapi
