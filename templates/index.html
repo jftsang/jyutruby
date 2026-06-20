@@ -15,19 +15,17 @@
 
   #annotated ruby {
     font-family: "Kaiti SC", TH-Khaai-TP0, TH-Khaai-TP2, TH-Feon-A, 楷体, KaiTi, 楷体_GB2312, KaiTi_GB2312, FandolKai, 华文楷体, STKaiti, TH-Khaai-PP0, TH-Khaai-PP2, Kai, "Kaiti TC", BiauKai, "AR PL UKai CN", 標楷體, DFKai-SB, "AR PL UKai HK", "AR PL UKai TW", 全字庫正楷體, TW-Kai, EUDCKAI, cursive;
-    max-width: 10px;
   }
 
   #annotated rt {
-    padding-left: 1em;
-    padding-right: 1em;
-    font-size: 10pt;
+    padding-left: 0.2em;
+    padding-right: 0.2em;
+    font-size: 0; /* hidden by default */
     font-family: sans-serif;
-    display: none;
   }
 
   #annotated rt.visible {
-    display: block;
+    font-size: 10pt;
   }
 
   #chinesetext {
@@ -77,15 +75,14 @@
     }
     if (jyut) {
       return `<ruby class="clickable">${char}<rt>${jyut}</rt></ruby>`;
-    }
-    else
+    } else
       return char;
   }
 
 
   submit.addEventListener("click", async () => {
     const query = encodeURIComponent(chinesetext.value);  // preserve line breaks
-    const response = await fetch("/transcribe?chinese=" + query);
+    const response = await fetch("/jyutping?chinese=" + query);
     const data = await response.json();
     const rubies = data.map((data) => displayWithRuby(...data));
 
