@@ -16,13 +16,23 @@ const initialState = {
   visibleRubies: new Set()
 };
 
+const fetchEffect = (dispatch, {text}) =>
+  fetch("/jyutping?chinese=" + encodeURIComponent(text))
+    .then(r => r.json())
+    .then(data => dispatch(actions.setAnnotatedData, data));
+
+
 const actions = {
-  setInputText: (state, event) => ({...state, inputText: event.target.value}),
-  setAnnotatedData: (state, data) => ({
-    ...state,
-    annotatedData: data,
-    visibleRubies: new Set()
-  }),
+  setInputText: (state, event) => {
+    return {...state, inputText: event.target.value};
+  },
+  setAnnotatedData: (state, data) => {
+    return {
+      ...state,
+      annotatedData: data,
+      visibleRubies: new Set()
+    };
+  },
   toggleRuby: (state, index) => {
     const newVisible = new Set(state.visibleRubies);
     if (newVisible.has(index)) {
@@ -38,31 +48,35 @@ const actions = {
       .filter(i => state.annotatedData[i][1]);
     return {...state, visibleRubies: new Set(allIndices)};
   },
-  hideAll: (state) => ({...state, visibleRubies: new Set()}),
-  submit: async (state) => {
-    const query = encodeURIComponent(state.inputText);
-    const response = await fetch("/jyutping?chinese=" + query);
-    const data = await response.json();
-    return actions.setAnnotatedData(state, data);
-  }
+  hideAll: (state) => {
+    return {...state, visibleRubies: new Set()};
+  },
+  submit: (state) => {
+    return [
+      state,
+      [fetchEffect, {text: state.inputText}]
+    ];
+  },
 };
 
 const displayWithRuby = (char, jyut, index, isVisible) => {
   if (char === '\n') {
-    return h('br');
+    return h('br', {class: ''}, []);
   }
   if (jyut) {
     return h('ruby', {
       class: 'clickable',
       onclick: [actions.toggleRuby, index]
     }, [
+      text(char),
       h('rt', {
-        class: isVisible ? 'visible' : ''
-      }, jyut),
-      char
+          class: isVisible ? 'visible' : ''
+        },
+        [text(jyut)]
+      ),
     ]);
   }
-  return char;
+  return text(char);
 };
 
 function view(state) {
@@ -71,13 +85,13 @@ function view(state) {
 
   const inputForm = h('div', {style: {padding: "50px", height: "40%"}}, [
     h('textarea', {
-      id: 'chinesetext',
-      name: 'chinesetext',
-      placeholder: 'Enter Chinese text...',
-      oninput: [actions.setInputText]
-    }, [
-      text(state.inputText)
-    ]),
+        id: 'chinesetext',
+        name: 'chinesetext',
+        placeholder: 'Enter Chinese text...',
+        oninput: actions.setInputText,
+      },
+      [text(state.inputText)]
+    ),
     h('div', {style: {display: "flex"}}, [
         h('button', {
             id: 'submit',

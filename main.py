@@ -1,4 +1,5 @@
 import string
+from functools import cache
 from operator import itemgetter
 
 import pycantonese
@@ -16,6 +17,7 @@ templates = Jinja2Templates(directory="templates")
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
+@cache
 def character_to_jyutping(character: str) -> tuple[str, str]:
     """Wrapper around pycantonese.character_to_jyutping that processes
     a single character, and is guaranteed to return a value even for
@@ -43,6 +45,7 @@ def character_to_jyutping(character: str) -> tuple[str, str]:
     return character, jyut
 
 
+@cache
 def character_to_pinyin(character: str) -> tuple[str, str]:
     """Wrapper around pypinyin that processes a single character,
     and is guaranteed to return a value even for non-Chinese characters
