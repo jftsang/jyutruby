@@ -3,35 +3,19 @@ import {defaultText} from "./defaulttext.js";
 import {cantojpmin_data} from "./CantoJpMin/scripts/modules_format/cantojpmin_data.js";
 
 const initialState = {
-  inputText: defaultText,
-  annotatedCharacters: new Set(),
-  showingAll: false,
+  inputText: defaultText, annotatedCharacters: new Set(), showingAll: false,
 };
 
 function toJyut(char) {
-  if (Object.hasOwn(cantojpmin_data, char))
-    return CantoJpMin.toJyutping(char);
+  if (Object.hasOwn(cantojpmin_data, char)) return CantoJpMin.toJyutping(char);
   return null;
 }
-
-/*
-const fetchEffect = async (dispatch, {text}) => {
-  const data = Array(...text).map((c) => [c, toJyut(c)])
-  return await dispatch(actions.setAnnotatedData, data);
-};
- */
 
 
 const actions = {
   setInputText: (state, event) => {
     return {...state, inputText: event.target.value};
-    /*
-    return [{...state, inputText: event.target.value},
-      [fetchEffect, {text: state.inputText}]
-    ];
-     */
-  },
-  toggleRuby: (state, char) => {
+  }, toggleRuby: (state, char) => {
     const annotatedCharacters = new Set(state.annotatedCharacters);
     if (annotatedCharacters.has(char)) {
       annotatedCharacters.delete(char);
@@ -39,11 +23,9 @@ const actions = {
       annotatedCharacters.add(char);
     }
     return {...state, annotatedCharacters: annotatedCharacters};
-  },
-  toggleShowAll: (state) => {
+  }, toggleShowAll: (state) => {
     return {...state, showingAll: !state.showingAll};
-  },
-  hideAll: (state) => {
+  }, hideAll: (state) => {
     return {...state, annotatedCharacters: new Set(), showingAll: false};
   },
 };
@@ -57,47 +39,31 @@ const displayCharacter = (char, isVisible) => {
     return text(char);
   }
   return h('ruby', {
-    class: 'clickable',
-    onclick: [actions.toggleRuby, char]
-  }, [
-    text(char),
-    h('rt', {
-        class: isVisible ? 'visible' : ''
-      },
-      [text(jyut)]
-    ),
-  ]);
+    class: 'clickable', onclick: [actions.toggleRuby, char]
+  }, [text(char), h('rt', {
+    class: isVisible ? 'visible' : ''
+  }, [text(jyut)]),]);
 };
 
 function view(state) {
   const showAllLabel = state.showingAll ? 'Don\'t show all' : 'Show all'
   const showAll = h('button', {onclick: actions.toggleShowAll}, [text(showAllLabel)]);
   const hideAll = h('button', {onclick: actions.hideAll}, [text('Hide all')]);
+  const topBar = h('div', {
+    class: 'topbar',
+  }, [showAll, hideAll])
 
-  const inputForm = h('div', {style: {padding: "50px", height: "40%"}}, [
-    h('textarea', {
-        id: 'chinesetext',
-        name: 'chinesetext',
-        placeholder: 'Enter Chinese text...',
-        oninput: actions.setInputText,
-      },
-      [text(state.inputText)]
-    ),
-  ])
+  const annotatedDisplay = h('div', {id: 'annotated'},
+    Array(...state.inputText).map(char => displayCharacter(char, state.annotatedCharacters.has(char) || state.showingAll))
+  );
+  const inputForm = h('div', {style: {padding: "50px", height: "40%"}}, [h('textarea', {
+    id: 'chinesetext',
+    name: 'chinesetext',
+    placeholder: 'Enter Chinese text...',
+    oninput: actions.setInputText,
+  }, [text(state.inputText)]),])
 
-  return h('div', {}, [
-    h('div', {style: {display: "flex", gap: "10px", marginBottom: "20px",}}, [
-      showAll, hideAll
-    ]),
-    h('div', {id: 'annotated'},
-      Array(...state.inputText).map(char =>
-        displayCharacter(
-          char, state.annotatedCharacters.has(char) || state.showingAll
-        )
-      )
-    ),
-    inputForm,
-  ]);
+  return h('div', {}, [topBar, annotatedDisplay, inputForm,]);
 }
 
 
@@ -106,5 +72,4 @@ app({
   view: view,
   subscriptions: (state) => [],
   init: initialState,
-  // init: [initialState, [fetchEffect, {text: initialState.inputText}]]
 });

@@ -29,3 +29,9 @@
   field-sizing: content;
   min-height: 4rem; /* Optional: prevents default single-line height */
 }
+
+#topbar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
