@@ -1,5 +1,6 @@
 import {h, app, text} from "hyperapp";
 import {defaultText} from "./defaulttext.js";
+import {cantojpmin_data} from "./CantoJpMin/scripts/modules_format/cantojpmin_data.js";
 
 const initialState = {
   inputText: defaultText,
@@ -7,10 +8,16 @@ const initialState = {
   visibleRubies: new Set()
 };
 
-const fetchEffect = (dispatch, {text}) =>
-  fetch("/jyutping?chinese=" + encodeURIComponent(text))
-    .then(r => r.json())
-    .then(data => dispatch(actions.setAnnotatedData, data));
+function toJyut(char) {
+  if (Object.hasOwn(cantojpmin_data, char))
+    return CantoJpMin.toJyutping(char);
+  return null;
+}
+
+const fetchEffect = async (dispatch, {text}) => {
+  const data = Array(...text).map((c) => [c, toJyut(c)])
+  return await dispatch(actions.setAnnotatedData, data);
+};
 
 
 const actions = {

@@ -1,3 +1,3 @@
-[submodule "frontend/CantoJpMin"]
-	path = frontend/CantoJpMin
+[submodule "src/CantoJpMin"]
+	path = src/CantoJpMin
 	url = https://github.com/hanleyweng/CantoJpMin
