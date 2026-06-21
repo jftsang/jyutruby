@@ -22,7 +22,9 @@ const fetchEffect = async (dispatch, {text}) => {
 
 const actions = {
   setInputText: (state, event) => {
-    return {...state, inputText: event.target.value};
+    return [{...state, inputText: event.target.value},
+      [fetchEffect, {text: state.inputText}]
+    ];
   },
   setAnnotatedData: (state, data) => {
     return {
@@ -48,12 +50,6 @@ const actions = {
   },
   hideAll: (state) => {
     return {...state, visibleRubies: new Set()};
-  },
-  submit: (state) => {
-    return [
-      state,
-      [fetchEffect, {text: state.inputText}]
-    ];
   },
 };
 
@@ -90,17 +86,6 @@ function view(state) {
       },
       [text(state.inputText)]
     ),
-    h('div', {style: {display: "flex"}}, [
-        h('button', {
-            id: 'submit',
-            name: 'submit',
-            style: {width: "100%"},
-            onclick: actions.submit
-          },
-          [text('Submit')]
-        )
-      ]
-    )
   ])
 
   return h('div', {}, [
@@ -121,5 +106,5 @@ app({
   node: document.getElementById('app'),
   view: view,
   subscriptions: (state) => [],
-  init: initialState
+  init: [initialState, [fetchEffect, {text: initialState.inputText}]]
 });
