@@ -4,8 +4,8 @@ import {cantojpmin_data} from "./CantoJpMin/scripts/modules_format/cantojpmin_da
 
 const initialState = {
   inputText: defaultText,
-  annotatedData: [],
-  visibleRubies: new Set()
+  annotatedCharacters: new Set(),
+  showingAll: false,
 };
 
 function toJyut(char) {
@@ -14,67 +14,64 @@ function toJyut(char) {
   return null;
 }
 
+/*
 const fetchEffect = async (dispatch, {text}) => {
   const data = Array(...text).map((c) => [c, toJyut(c)])
   return await dispatch(actions.setAnnotatedData, data);
 };
+ */
 
 
 const actions = {
   setInputText: (state, event) => {
+    return {...state, inputText: event.target.value};
+    /*
     return [{...state, inputText: event.target.value},
       [fetchEffect, {text: state.inputText}]
     ];
+     */
   },
-  setAnnotatedData: (state, data) => {
-    return {
-      ...state,
-      annotatedData: data,
-      visibleRubies: new Set()
-    };
-  },
-  toggleRuby: (state, index) => {
-    const newVisible = new Set(state.visibleRubies);
-    if (newVisible.has(index)) {
-      newVisible.delete(index);
+  toggleRuby: (state, char) => {
+    const annotatedCharacters = new Set(state.annotatedCharacters);
+    if (annotatedCharacters.has(char)) {
+      annotatedCharacters.delete(char);
     } else {
-      newVisible.add(index);
+      annotatedCharacters.add(char);
     }
-    return {...state, visibleRubies: newVisible};
+    return {...state, annotatedCharacters: annotatedCharacters};
   },
-  showAll: (state) => {
-    const allIndices = state.annotatedData
-      .map((_, i) => i)
-      .filter(i => state.annotatedData[i][1]);
-    return {...state, visibleRubies: new Set(allIndices)};
+  toggleShowAll: (state) => {
+    return {...state, showingAll: !state.showingAll};
   },
   hideAll: (state) => {
-    return {...state, visibleRubies: new Set()};
+    return {...state, annotatedCharacters: new Set(), showingAll: false};
   },
 };
 
-const displayWithRuby = (char, jyut, index, isVisible) => {
+const displayCharacter = (char, isVisible) => {
   if (char === '\n') {
     return h('br', {class: ''}, []);
   }
-  if (jyut) {
-    return h('ruby', {
-      class: 'clickable',
-      onclick: [actions.toggleRuby, index]
-    }, [
-      text(char),
-      h('rt', {
-          class: isVisible ? 'visible' : ''
-        },
-        [text(jyut)]
-      ),
-    ]);
+  const jyut = toJyut(char);
+  if (!jyut) {
+    return text(char);
   }
-  return text(char);
+  return h('ruby', {
+    class: 'clickable',
+    onclick: [actions.toggleRuby, char]
+  }, [
+    text(char),
+    h('rt', {
+        class: isVisible ? 'visible' : ''
+      },
+      [text(jyut)]
+    ),
+  ]);
 };
 
 function view(state) {
-  const showAll = h('button', {onclick: actions.showAll}, [text('Show all')]);
+  const showAllLabel = state.showingAll ? 'Don\'t show all' : 'Show all'
+  const showAll = h('button', {onclick: actions.toggleShowAll}, [text(showAllLabel)]);
   const hideAll = h('button', {onclick: actions.hideAll}, [text('Hide all')]);
 
   const inputForm = h('div', {style: {padding: "50px", height: "40%"}}, [
@@ -93,8 +90,10 @@ function view(state) {
       showAll, hideAll
     ]),
     h('div', {id: 'annotated'},
-      state.annotatedData.map(([char, jyut], index) =>
-        displayWithRuby(char, jyut, index, state.visibleRubies.has(index))
+      Array(...state.inputText).map(char =>
+        displayCharacter(
+          char, state.annotatedCharacters.has(char) || state.showingAll
+        )
       )
     ),
     inputForm,
@@ -106,5 +105,6 @@ app({
   node: document.getElementById('app'),
   view: view,
   subscriptions: (state) => [],
-  init: [initialState, [fetchEffect, {text: initialState.inputText}]]
+  init: initialState,
+  // init: [initialState, [fetchEffect, {text: initialState.inputText}]]
 });

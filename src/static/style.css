@@ -1,26 +1,25 @@
 #annotated {
   font-size: 24px;
   padding: 50px;
-  white-space: pre-wrap;
+  /*white-space: pre-wrap;*/
 }
 
 #annotated ruby {
+  margin-top: 30px;
+  margin-bottom: 10px;
   font-family: "Kaiti SC", TH-Khaai-TP0, TH-Khaai-TP2, TH-Feon-A, 楷体, KaiTi, 楷体_GB2312, KaiTi_GB2312, FandolKai, 华文楷体, STKaiti, TH-Khaai-PP0, TH-Khaai-PP2, Kai, "Kaiti TC", BiauKai, "AR PL UKai CN", 標楷體, DFKai-SB, "AR PL UKai HK", "AR PL UKai TW", 全字庫正楷體, TW-Kai, EUDCKAI, cursive;
-}
-
-#annotated ruby:hover {
-  color: gray;
 }
 
 #annotated rt {
   padding-left: 0.2em;
   padding-right: 0.2em;
-  font-size: 0; /* hidden by default */
+  opacity: 0;
   font-family: sans-serif;
 }
 
 #annotated rt.visible {
   font-size: 10pt;
+  opacity: 100%;
 }
 
 #chinesetext {
