@@ -1,20 +1,14 @@
 import string
 from functools import cache
-from operator import itemgetter
 
 import pycantonese
 import uvicorn
-from fastapi import FastAPI, Request, Response
-from fastapi.staticfiles import StaticFiles
-from starlette.responses import HTMLResponse
-from starlette.templating import Jinja2Templates
+from fastapi import FastAPI
+from pypinyin import Style, pinyin
 from streamerate import stream
 
-from pypinyin import pinyin, Style
-
 app = FastAPI()
-templates = Jinja2Templates(directory="templates")
-app.mount("/static", StaticFiles(directory="static"), name="static")
+app.frontend("/", directory="dist/")
 
 
 @cache
@@ -85,11 +79,6 @@ async def jyutping_api(chinese: str) -> list[tuple[str, str | None]]:
 @app.get("/pinyin")
 async def pinyin_api(chinese: str) -> list[tuple[str, str | None]]:
     return chinese_to_pinyin(chinese)
-
-
-@app.get("/")
-async def root(request: Request) -> HTMLResponse:
-    return templates.TemplateResponse(request, "index.html", context={})
 
 
 @app.get("/hello/{name}")

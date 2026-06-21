@@ -1,0 +1,13 @@
+{
+  "name": "jyutruby",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "mkdir -p ../dist && cp index.html ../dist/ && cp -r static ../dist/"
+  },
+  "dependencies": {
+    "hyperapp": "^2.0.0"
+  },
+  "devDependencies": {
+  }
+}
