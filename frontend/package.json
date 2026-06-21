@@ -3,11 +3,13 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "build": "mkdir -p ../dist && cp index.html ../dist/ && cp -r static ../dist/"
+    "build": "npx parcel build index.html",
+    "clean": "rm -r dist"
   },
   "dependencies": {
     "hyperapp": "^2.0.0"
   },
   "devDependencies": {
+    "parcel": "^2.16.4"
   }
 }

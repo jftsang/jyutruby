@@ -8,7 +8,7 @@ from pypinyin import Style, pinyin
 from streamerate import stream
 
 app = FastAPI()
-app.frontend("/", directory="dist/")
+app.frontend("/", directory="frontend/dist/")
 
 
 @cache
