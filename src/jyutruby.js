@@ -71,6 +71,7 @@ function view(state) {
   const showAll = h('input', {
     id: 'showAllToggle',
     type: 'checkbox',
+    role: 'switch',
     checked: state.showingAll,
     onclick: actions.toggleShowAll
   }, [text(showAllLabel)]);
@@ -79,6 +80,7 @@ function view(state) {
   const preserveLines = h('input', {
     id: 'preserveLinesToggle',
     type: 'checkbox',
+    role: 'switch',
     checked: state.preservingLines,
     onclick: actions.togglePreservingLines
   }, []);
