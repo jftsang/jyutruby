@@ -140,10 +140,12 @@ function view(state) {
       [preserveLinesInput, preserveLinesLabel]
     );
 
-    const annotatedDisplay = h('div', {
+    const annotatedDisplay = h('article', {}, [
+      h('div', {
       id: 'annotated',
-      class: 'chinese mx-0 mx-md-auto col-md-6'
-    }, Array(...state.inputText).map(char => displayCharacter(char, state)));
+      class: 'chinese mx-0 mx-md-auto col-md-7'
+    }, Array(...state.inputText).map(char => displayCharacter(char, state)))
+     ]);
     body = h('div', {
       class: 'topbar',
     }, [showAll, hideAll, preserveLines, annotatedDisplay])
