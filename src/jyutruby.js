@@ -17,13 +17,29 @@ function toJyut(char) {
 const actions = {
   setInputText: (state, event) => {
     return {...state, inputText: event.target.value};
-  }, toggleRuby: (state, char) => {
+  }, toggleRuby: (state, event, char) => {
+    event.preventDefault();
+
+    // if holding down shift, add to annotations, otherwise replace annotations
+    const sticky = event.shiftKey;
+
     const annotatedCharacters = new Set(state.annotatedCharacters);
-    if (annotatedCharacters.has(char)) {
-      annotatedCharacters.delete(char);
-    } else {
-      annotatedCharacters.add(char);
+    if (sticky) {
+      if (annotatedCharacters.has(char)) {
+        annotatedCharacters.delete(char);
+      } else {
+        annotatedCharacters.add(char);
+      }
     }
+    else {
+      if (state.annotatedCharacters.has(char)) {
+        annotatedCharacters.delete(char);
+      } else {
+        annotatedCharacters.clear()
+        annotatedCharacters.add(char);
+      }
+    }
+
     return {...state, annotatedCharacters: annotatedCharacters};
   }, toggleShowAll: (state) => {
     return {...state, showingAll: !state.showingAll};
@@ -46,7 +62,7 @@ const displayCharacter = (char, state) => {
   }
   const rt = h('rt', {class: isVisible ? 'visible' : ''}, [text(jyut)])
   return h('ruby', {
-    class: 'clickable', onclick: [actions.toggleRuby, char]
+    class: 'clickable', onclick: (state, event) => actions.toggleRuby(state, event, char)
   }, [rt, text(char)]);
 };
 
