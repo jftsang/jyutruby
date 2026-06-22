@@ -7,6 +7,11 @@
     "dev": "npx parcel watch src/index.html",
     "clean": "rm -r dist"
   },
+  "targets": {
+    "default": {
+      "publicUrl": "./"
+    }
+  },
   "dependencies": {
     "hyperapp": "^2.0.0"
   },
