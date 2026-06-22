@@ -97,31 +97,48 @@ function view(state) {
     }, [text(state.inputText)]),]);
   }
   else {
-    const showAllLabel = h('label', {'for': 'showAllToggle'}, [text('Show all')]);
-    const showAll = h('input', {
+    const showAllInput = h('input', {
       id: 'showAllToggle',
       type: 'checkbox',
       role: 'switch',
+      class: 'form-check-input',
       checked: state.showingAll,
       onclick: actions.toggleShowAll
-    }, [text(showAllLabel)]);
+    }, []);
+    const showAllLabel = h('label', {
+      'class': 'form-check-label',
+      'for': 'showAllToggle'
+    }, [text('Show all')]);
+    const showAll = h('div',
+      {class: 'form-check form-check-inline form-switch'},
+      [showAllInput, showAllLabel]
+    );
 
-    const preserveLinesLabel = h('label', {'for': 'preserveLinesToggle'}, [text('Preserve lines')]);
-    const preserveLines = h('input', {
+    const preserveLinesInput = h('input', {
       id: 'preserveLinesToggle',
       type: 'checkbox',
       role: 'switch',
+      class: 'form-check-input',
       checked: state.preservingLines,
       onclick: actions.togglePreservingLines
     }, []);
+    const preserveLinesLabel = h('label', {
+      'class': 'form-check-label',
+      'for': 'preserveLinesToggle'
+    }, [text('Preserve lines')]);
+    const preserveLines = h('div',
+      {class: 'form-check form-check-inline form-switch'},
+      [preserveLinesInput, preserveLinesLabel]
+    );
+
     const hideAll = h('button', {onclick: actions.hideAll}, [text('Hide all')]);
     const annotatedDisplay = h('div', {
       id: 'annotated',
-      class: 'chinese'
+      class: 'chinese mx-0 mx-md-auto col-md-6'
     }, Array(...state.inputText).map(char => displayCharacter(char, state)));
     body = h('div', {
       class: 'topbar',
-    }, [showAll, showAllLabel, hideAll, preserveLines, preserveLinesLabel, annotatedDisplay])
+    }, [showAll, hideAll, preserveLines, annotatedDisplay])
   }
 
   return h('div', {}, [editButton, body]);
