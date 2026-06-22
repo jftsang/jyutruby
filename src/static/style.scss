@@ -2,6 +2,9 @@ $primary: #333333;
 
 @import "bootstrap/scss/bootstrap";
 
+@import url(https://db.onlinewebfonts.com/c/2f80295984700be025edc6c17f38484d?family=AaKaiTi);
+@import url(https://db.onlinewebfonts.com/c/1ee9941f1b8c128110ca4307dda59917?family=STKaiti);
+
 body {
   background-color: beige;
 }
@@ -38,7 +41,7 @@ div #annotated {
 }
 
 .chinese {
-  font-family: "Kaiti TC", "TW-Kai Regular", cursive;
+  font-family: "Kaiti TC", "AaKaiTi", "STKaiti", cursive;
 }
 
 #chineseInput {
