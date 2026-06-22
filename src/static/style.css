@@ -1,6 +1,6 @@
 #annotated {
   font-size: x-large;
-  padding: 50px;
+  /*padding: 50px;*/
   line-height: 1.5em;
 }
 
@@ -9,6 +9,10 @@
   width: 1.2em;
   text-align: center;
   font-family: "Kaiti SC", TH-Khaai-TP0, TH-Khaai-TP2, TH-Feon-A, 楷体, KaiTi, 楷体_GB2312, KaiTi_GB2312, FandolKai, 华文楷体, STKaiti, TH-Khaai-PP0, TH-Khaai-PP2, Kai, "Kaiti TC", BiauKai, "AR PL UKai CN", 標楷體, DFKai-SB, "AR PL UKai HK", "AR PL UKai TW", 全字庫正楷體, TW-Kai, EUDCKAI, cursive;
+}
+
+#annotated ruby:hover {
+  color: darkred;
 }
 
 #annotated rt {

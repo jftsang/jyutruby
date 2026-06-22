@@ -45,12 +45,12 @@ const displayCharacter = (char, isVisible) => {
 };
 
 function view(state) {
-  const showAllLabel = state.showingAll ? 'Don\'t show all' : 'Show all'
-  const showAll = h('button', {onclick: actions.toggleShowAll}, [text(showAllLabel)]);
+  const showAllLabel = h('label', {'for': 'showAllToggle'}, [text('Show all')]);
+  const showAll = h('input', {id: 'showAllToggle', type: 'checkbox', onclick: actions.toggleShowAll}, [text(showAllLabel)]);
   const hideAll = h('button', {onclick: actions.hideAll}, [text('Hide all')]);
   const topBar = h('div', {
     class: 'topbar',
-  }, [showAll, hideAll])
+  }, [showAll, showAllLabel, hideAll])
 
   const annotatedDisplay = h('div', {id: 'annotated'},
     Array(...state.inputText).map(char => displayCharacter(char, state.annotatedCharacters.has(char) || state.showingAll))
