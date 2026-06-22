@@ -10,8 +10,7 @@ const initialState = {
 };
 
 function toJyut(char) {
-  if (Object.hasOwn(cantojpmin_data, char)) return CantoJpMin.toJyutping(char);
-  return null;
+  return Object.hasOwn(cantojpmin_data, char) ? CantoJpMin.toJyutping(char) : null;
 }
 
 const actions = {
@@ -89,10 +88,11 @@ function view(state) {
     class: 'topbar',
   }, [showAll, showAllLabel, hideAll, preserveLines, preserveLinesLabel])
 
-  const annotatedDisplay = h('div', {id: 'annotated'}, Array(...state.inputText).map(char => displayCharacter(char, state)));
+  const annotatedDisplay = h('div', {id: 'annotated', class: 'chinese'}, Array(...state.inputText).map(char => displayCharacter(char, state)));
   const inputForm = h('div', {style: {padding: "50px", height: "40%"}}, [h('textarea', {
-    id: 'chinesetext',
-    name: 'chinesetext',
+    id: 'chineseInput',
+    name: 'chineseInput',
+    class: 'chinese',
     placeholder: 'Enter Chinese text...',
     oninput: actions.setInputText,
   }, [text(state.inputText)]),])

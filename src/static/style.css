@@ -1,4 +1,4 @@
-@import "https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css";
+@import "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css";
 
 #annotated {
   font-size: x-large;
@@ -10,7 +10,6 @@
   display: inline-block;
   width: 1.2em;
   text-align: center;
-  font-family: "Kaiti SC", TH-Khaai-TP0, TH-Khaai-TP2, TH-Feon-A, 楷体, KaiTi, 楷体_GB2312, KaiTi_GB2312, FandolKai, 华文楷体, STKaiti, TH-Khaai-PP0, TH-Khaai-PP2, Kai, "Kaiti TC", BiauKai, "AR PL UKai CN", 標楷體, DFKai-SB, "AR PL UKai HK", "AR PL UKai TW", 全字庫正楷體, TW-Kai, EUDCKAI, cursive;
 }
 
 #annotated ruby:hover {
@@ -33,9 +32,12 @@
   opacity: 100%;
 }
 
-#chinesetext {
-  font-size: large;
+.chinese {
   font-family: "Kaiti SC", TH-Khaai-TP0, TH-Khaai-TP2, TH-Feon-A, 楷体, KaiTi, 楷体_GB2312, KaiTi_GB2312, FandolKai, 华文楷体, STKaiti, TH-Khaai-PP0, TH-Khaai-PP2, Kai, "Kaiti TC", BiauKai, "AR PL UKai CN", 標楷體, DFKai-SB, "AR PL UKai HK", "AR PL UKai TW", 全字庫正楷體, TW-Kai, EUDCKAI, cursive;
+}
+
+#chineseInput {
+  font-size: large;
   width: 100%;
   field-sizing: content;
   min-height: 4rem; /* Optional: prevents default single-line height */
