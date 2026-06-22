@@ -38,11 +38,10 @@ const displayCharacter = (char, isVisible) => {
   if (!jyut) {
     return text(char);
   }
+  const rt = h('rt', {class: isVisible ? 'visible' : ''}, [text(jyut)])
   return h('ruby', {
     class: 'clickable', onclick: [actions.toggleRuby, char]
-  }, [text(char), h('rt', {
-    class: isVisible ? 'visible' : ''
-  }, [text(jyut)]),]);
+  }, [rt, text(char)]);
 };
 
 function view(state) {
