@@ -81,9 +81,11 @@ function view(state) {
 
   const editButton = h(
     'button',
-    {onclick: actions.toggleEditing},
+    {onclick: actions.toggleEditing,
+      class: 'btn btn-primary'
+    },
     [text(state.editing ? 'view' : 'edit')]
-  )  // FIXME this should show 'view' when in edit mode
+  )
 
 
   let body;
@@ -114,6 +116,13 @@ function view(state) {
       [showAllInput, showAllLabel]
     );
 
+    const hideAll = h('button',
+      {
+        disabled: state.annotatedCharacters.size === 0 && !state.showingAll,
+        onclick: actions.hideAll, class: 'btn btn-secondary'},
+      [text('Hide all')]
+    );
+
     const preserveLinesInput = h('input', {
       id: 'preserveLinesToggle',
       type: 'checkbox',
@@ -131,7 +140,6 @@ function view(state) {
       [preserveLinesInput, preserveLinesLabel]
     );
 
-    const hideAll = h('button', {onclick: actions.hideAll}, [text('Hide all')]);
     const annotatedDisplay = h('div', {
       id: 'annotated',
       class: 'chinese mx-0 mx-md-auto col-md-6'
