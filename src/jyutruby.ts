@@ -1,5 +1,5 @@
-import {app, h, text} from "hyperapp";
-import {AppState, defaultInitialState, toggle} from "./state";
+import {app, h, text} from "hyperapp"; // @ts-ignore
+import {AppMode, AppState, defaultInitialState, DisplayMode, toggle} from "./state";
 import {cantojpmin_data} from "./CantoJpMin/scripts/modules_format/cantojpmin_data.js";
 import {loadFromStorage, stateSaver} from "./storage";
 
@@ -25,33 +25,23 @@ const actions = {
     handleCharacterClick: (state: AppState, event: MouseEvent, char: string): AppState => {
         event.preventDefault();
 
-        // if holding down shift
-        const saving = event.shiftKey;
-
-        const annotatedCharacters = new Set(state.annotatedCharacters);
         const savedCharacters = new Set(state.savedCharacters);
 
-        if (saving)
-            toggle(savedCharacters, char)
-        toggle(annotatedCharacters, char)
+        toggle(savedCharacters, char)
 
         return {
             ...state,
-            annotatedCharacters: annotatedCharacters,
             savedCharacters: savedCharacters
         }
     },
-    toggleEditing: (state: AppState): AppState => {
-        return {...state, editing: !state.editing};
+    setAppMode: (state: AppState, newMode: AppMode): AppState => {
+        return {...state, appMode: newMode};
     },
-    toggleShowAll: (state: AppState): AppState => {
-        return {...state, showingAll: !state.showingAll};
+    setDisplayMode: (state: AppState, newMode: DisplayMode): AppState => {
+        return {...state, displayMode: newMode};
     },
     togglePreservingLines: (state: AppState): AppState => {
         return {...state, preservingLines: !state.preservingLines};
-    },
-    hideAll: (state: AppState): AppState => {
-        return {...state, annotatedCharacters: new Set(), showingAll: false};
     },
 };
 
@@ -64,7 +54,12 @@ const displayCharacter = (char: string, state: AppState) => {
         if (!state.preservingLines) return;
         return h('br', {class: ''}, []);
     }
-    const isVisible = state.annotatedCharacters.has(char) || state.showingAll
+    const isVisible = (
+        (
+            state.displayMode == DisplayMode.showingSaved
+            && state.savedCharacters.has(char)
+        ) || (state.displayMode == DisplayMode.showingAll)
+    );
     const jyut = toJyutping(char);
     if (!jyut) {
         return text(char);
@@ -80,80 +75,122 @@ const displayCharacter = (char: string, state: AppState) => {
     }, [rt, text(char)]);
 };
 
-function view(state) {
+
+function editingView(state: AppState) {
+    const doneButton = h(
+        'button',
+        {
+            onclick: [actions.setAppMode, AppMode.annotation],
+            class: 'btn btn-primary'
+        },
+        [text('done')]
+    )
+
+    const editBody = h('div', {style: {padding: "50px", height: "40%"}}, [h('textarea', {
+        id: 'chineseInput',
+        name: 'chineseInput',
+        class: 'chinese',
+        placeholder: 'Enter Chinese text...',
+        oninput: actions.setInputText,
+    }, [text(state.inputText)]),])
+
+    return h('div', {class: 'edit'}, [doneButton, editBody])
+}
+
+function annotationView(state: AppState) {
     const editButton = h(
         'button',
         {
-            onclick: actions.toggleEditing,
+            onclick: [actions.setAppMode, AppMode.editing],
             class: 'btn btn-primary'
         },
-        [text(state.editing ? 'view' : 'edit')]
+        [text('edit')]
     )
 
+    const showingAllRadio = h('input', {
+        id: 'showingAllRadio',
+        name: 'displayMode',
+        type: 'radio',
+        class: 'form-radio',
+        checked: state.displayMode === DisplayMode.showingAll,
+        onclick: [actions.setDisplayMode, DisplayMode.showingAll]
+    }, []);
+    const showingAllLabel = h('label', {
+        'class': 'form-radio-label',
+        'for': 'showingAllRadio'
+    }, [text('Show all')]);
+
+    const showingSavedRadio = h('input', {
+        id: 'showingSavedRadio',
+        name: 'displayMode',
+        type: 'radio',
+        class: 'form-radio',
+        checked: state.displayMode === DisplayMode.showingSaved,
+        onclick: [actions.setDisplayMode, DisplayMode.showingSaved]
+    }, []);
+    const showingSavedLabel = h('label', {
+        'class': 'form-radio-label',
+        'for': 'showingSavedRadio'
+    }, [text('Show saved')])
+
+    const hidingAllRadio = h('input', {
+        id: 'hidingAllRadio',
+        name: 'displayMode',
+        type: 'radio',
+        class: 'form-radio',
+        checked: state.displayMode === DisplayMode.hidingAll,
+        onclick: [actions.setDisplayMode, DisplayMode.hidingAll]
+    }, []);
+    const hidingAllLabel = h('label', {
+        'class': 'form-radio-label',
+        'for': 'hidingAllRadio'
+    }, [text('Hide all')])
+
+    const displayModeChooser = h('div',
+        {class: 'form-check form-check-inline form-switch'},
+        [showingAllRadio, showingAllLabel, showingSavedRadio, showingSavedLabel, hidingAllRadio, hidingAllLabel]
+    );
+
+    const preserveLinesInput = h('input', {
+        id: 'preserveLinesToggle',
+        type: 'checkbox',
+        role: 'switch',
+        class: 'form-check-input',
+        checked: state.preservingLines,
+        onclick: actions.togglePreservingLines
+    }, []);
+    const preserveLinesLabel = h('label', {
+        'class': 'form-check-label',
+        'for': 'preserveLinesToggle'
+    }, [text('Preserve lines')]);
+    const preserveLines = h('div',
+        {class: 'form-check form-check-inline form-switch'},
+        [preserveLinesInput, preserveLinesLabel]
+    );
+
+    const topBar =  h(
+        'div', {class: 'topbar'}, [editButton, displayModeChooser, preserveLines]
+    );
+    const annotatedDisplay = h('article', {}, [
+        h('div', {
+            id: 'annotated',
+            class: 'chinese mx-0 mx-md-auto col-md-7'
+        }, Array(...state.inputText).map(char => displayCharacter(char, state)))
+    ]);
+    return h('div', {}, [topBar, annotatedDisplay]);
+}
+
+function view(state: AppState) {
     let body;
-    if (state.editing) {
-        body = h('div', {style: {padding: "50px", height: "40%"}}, [h('textarea', {
-            id: 'chineseInput',
-            name: 'chineseInput',
-            class: 'chinese',
-            placeholder: 'Enter Chinese text...',
-            oninput: actions.setInputText,
-        }, [text(state.inputText)]),]);
+    if (state.appMode === AppMode.editing) {
+        body = editingView(state);
+    } else if (state.appMode === AppMode.annotation) {
+        body = annotationView(state);
     } else {
-        const showAllInput = h('input', {
-            id: 'showAllToggle',
-            type: 'checkbox',
-            role: 'switch',
-            class: 'form-check-input',
-            checked: state.showingAll,
-            onclick: actions.toggleShowAll
-        }, []);
-        const showAllLabel = h('label', {
-            'class': 'form-check-label',
-            'for': 'showAllToggle'
-        }, [text('Show all')]);
-        const showAll = h('div',
-            {class: 'form-check form-check-inline form-switch'},
-            [showAllInput, showAllLabel]
-        );
-
-        const hideAll = h('button',
-            {
-                disabled: state.annotatedCharacters.size === 0 && !state.showingAll,
-                onclick: actions.hideAll, class: 'btn btn-secondary'
-            },
-            [text('Hide all')]
-        );
-
-        const preserveLinesInput = h('input', {
-            id: 'preserveLinesToggle',
-            type: 'checkbox',
-            role: 'switch',
-            class: 'form-check-input',
-            checked: state.preservingLines,
-            onclick: actions.togglePreservingLines
-        }, []);
-        const preserveLinesLabel = h('label', {
-            'class': 'form-check-label',
-            'for': 'preserveLinesToggle'
-        }, [text('Preserve lines')]);
-        const preserveLines = h('div',
-            {class: 'form-check form-check-inline form-switch'},
-            [preserveLinesInput, preserveLinesLabel]
-        );
-
-        const annotatedDisplay = h('article', {}, [
-            h('div', {
-                id: 'annotated',
-                class: 'chinese mx-0 mx-md-auto col-md-7'
-            }, Array(...state.inputText).map(char => displayCharacter(char, state)))
-        ]);
-        body = h('div', {
-            class: 'topbar',
-        }, [showAll, hideAll, preserveLines, annotatedDisplay])
+        throw new Error('Unknown app mode');
     }
 
-    return h('div', {}, [editButton, body]);
+    return h('div', {}, [body]);
 }
 
 

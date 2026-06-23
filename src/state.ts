@@ -95,12 +95,22 @@ export const defaultText = `人之初，性本善，性相近，習相遠；
 勤有功，戲無益，戒之哉，宜勉力。
 `;
 
+export enum DisplayMode {
+    showingAll,
+    showingSaved,
+    hidingAll,
+}
+
+export enum AppMode {
+    annotation,
+    editing,
+}
+
 export interface AppState {
     inputText: string;
-    annotatedCharacters: Set<any>;
     savedCharacters: Set<any>;
-    editing: boolean;
-    showingAll: boolean;
+    appMode: AppMode,
+    displayMode: DisplayMode,
     preservingLines: boolean
 }
 
@@ -113,9 +123,8 @@ export function toggle<T>(set: Set<T>, x: T): void {
 
 export const defaultInitialState: AppState = {
   inputText: defaultText,
-  annotatedCharacters: new Set(),
   savedCharacters: new Set(),
-  editing: false,
-  showingAll: false,
+  appMode: AppMode.annotation,
+  displayMode: DisplayMode.showingSaved,
   preservingLines: true,
 };
