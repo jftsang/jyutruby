@@ -75,16 +75,28 @@ const displayCharacter = (char: string, state: AppState) => {
     }, [rt, text(char)]);
 };
 
-
-function editingView(state: AppState) {
-    const doneButton = h(
-        'button',
+function modeChooser(state: AppState) {
+    const viewButton = h(
+        'a',
         {
             onclick: [actions.setAppMode, AppMode.annotation],
-            class: 'btn btn-primary'
+            class: 'nav-link' + (state.appMode === AppMode.annotation ? ' active' : '')
         },
-        [text('done')]
+        [text('view')]
     )
+    const editButton = h(
+        'a',
+        {
+            onclick: [actions.setAppMode, AppMode.editing],
+            class: 'nav-link' + (state.appMode === AppMode.editing ? ' active' : '')
+        },
+        [text('edit')]
+    )
+    return h('nav', {id: 'modeChooser', class: 'nav nav-tabs justify-content-center'}, [viewButton, editButton])
+}
+
+
+function editingView(state: AppState) {
 
     const editBody = h('div', {style: {padding: "50px", height: "40%"}}, [h('textarea', {
         id: 'chineseInput',
@@ -94,24 +106,15 @@ function editingView(state: AppState) {
         oninput: actions.setInputText,
     }, [text(state.inputText)]),])
 
-    return h('div', {class: 'edit'}, [doneButton, editBody])
+    return h('div', {class: 'edit'}, [editBody])
 }
 
 function annotationView(state: AppState) {
-    const editButton = h(
-        'button',
-        {
-            onclick: [actions.setAppMode, AppMode.editing],
-            class: 'btn btn-primary'
-        },
-        [text('edit')]
-    )
-
     const showingAllRadio = h('input', {
         id: 'showingAllRadio',
         name: 'displayMode',
         type: 'radio',
-        class: 'form-radio',
+        class: 'form-radio',  // FIXME fix these classes to improve styling
         checked: state.displayMode === DisplayMode.showingAll,
         onclick: [actions.setDisplayMode, DisplayMode.showingAll]
     }, []);
@@ -169,7 +172,7 @@ function annotationView(state: AppState) {
     );
 
     const topBar =  h(
-        'div', {class: 'topbar'}, [editButton, displayModeChooser, preserveLines]
+        'div', {class: 'topbar'}, [displayModeChooser, preserveLines]
     );
     const annotatedDisplay = h('article', {}, [
         h('div', {
@@ -190,7 +193,7 @@ function view(state: AppState) {
         throw new Error('Unknown app mode');
     }
 
-    return h('div', {}, [body]);
+    return h('div', {}, [modeChooser(state), body]);
 }
 
 
