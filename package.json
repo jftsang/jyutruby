@@ -18,7 +18,9 @@
     "sass": "^1.101.0"
   },
   "devDependencies": {
+    "@parcel/packager-raw-url": "^2.16.4",
     "@parcel/transformer-sass": "^2.16.4",
+    "@parcel/transformer-webmanifest": "^2.16.4",
     "parcel": "^2.16.4"
   }
 }

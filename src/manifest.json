@@ -1,0 +1,12 @@
+{
+  "name": "Jyutruby",
+  "short_name": "jyutruby",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#001B69",
+  "theme_color": "#FFFFFF",
+  "icons": [
+    { "src": "static/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "static/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
