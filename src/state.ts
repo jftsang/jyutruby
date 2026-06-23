@@ -110,7 +110,7 @@ export enum AppMode {
 
 export interface AppState {
     inputText: string;
-    savedCharacters: Set<any>;
+    savedCharacters: Set<string>;
     appMode: AppMode,
     displayMode: DisplayMode,
     preservingLines: boolean

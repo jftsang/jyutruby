@@ -10,6 +10,20 @@ const actions = {
         savedCharacters.add(char);
         return {...state, savedCharacters};
     },
+    sortCharacters: (state: AppState): AppState => {
+        const sortedCharacters = Array.from(state.savedCharacters);
+        sortedCharacters.sort(
+            (a, b) => a.localeCompare(b, 'zh', { collation: 'stroke' })
+        );
+        return {...state, savedCharacters: new Set(sortedCharacters)};
+    },
+    sortByJyutping(state: AppState): AppState {
+        const sortedCharacters = Array.from(state.savedCharacters);
+        sortedCharacters.sort(
+            (a, b) => toJyutping(a).localeCompare(toJyutping(b))
+        );
+        return {...state, savedCharacters: new Set(sortedCharacters)};
+    },
     removeSavedCharacter: (state: AppState, char: string): AppState => {
         const savedCharacters = new Set(state.savedCharacters);
         savedCharacters.delete(char);
@@ -21,7 +35,7 @@ const actions = {
         } else {
             return state
         }
-    }
+    },
 }
 
 for (const [key, value] of Object.entries(actions)) {
@@ -102,13 +116,26 @@ export default function reviewView(state: AppState) {
         rows
     );
 
+    const sortCharactersButton = h('button', {
+        class: 'btn btn-secondary',
+        onclick: actions.sortCharacters
+    }, [text('sort by strokes')])
 
-    const clearAllButton = h('div', {class: 'row justify-content-end'}, [
-      h('div', {class: 'col-md-3'}, [
-        h('button', {
-          class: 'btn btn-danger w-100',
-          onclick: actions.removeAllSavedCharacters,
-        }, [text('clear all')])
+    const sortByJyutpingButton = h('button', {
+        class: 'btn btn-secondary',
+        onclick: actions.sortByJyutping
+    }, [text('sort by jyutping')])
+
+    const clearAllButton = h('button', {
+        class: 'btn btn-danger',
+        onclick: actions.removeAllSavedCharacters,
+    }, [text('clear')])
+
+    const buttons = h('div', {class: 'row justify-content-end'}, [
+      h('div', {class: 'col-md-6'}, [
+          sortCharactersButton,
+          sortByJyutpingButton,
+          clearAllButton
       ])
     ]);
 
@@ -116,7 +143,6 @@ export default function reviewView(state: AppState) {
         h('div', {class: 'row justify-content-center'}, [
             h('div', {class: 'col-md-8'}, [table])
         ]),
-
-        clearAllButton,
+        buttons
     ])
 }
