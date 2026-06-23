@@ -110,48 +110,34 @@ function editingView(state: AppState) {
 }
 
 function annotationView(state: AppState) {
-    const showingAllRadio = h('input', {
-        id: 'showingAllRadio',
-        name: 'displayMode',
-        type: 'radio',
-        class: 'form-radio',  // FIXME fix these classes to improve styling
-        checked: state.displayMode === DisplayMode.showingAll,
-        onclick: [actions.setDisplayMode, DisplayMode.showingAll]
-    }, []);
-    const showingAllLabel = h('label', {
-        'class': 'form-radio-label',
-        'for': 'showingAllRadio'
-    }, [text('Show all')]);
 
-    const showingSavedRadio = h('input', {
-        id: 'showingSavedRadio',
-        name: 'displayMode',
-        type: 'radio',
-        class: 'form-radio',
-        checked: state.displayMode === DisplayMode.showingSaved,
-        onclick: [actions.setDisplayMode, DisplayMode.showingSaved]
-    }, []);
-    const showingSavedLabel = h('label', {
-        'class': 'form-radio-label',
-        'for': 'showingSavedRadio'
-    }, [text('Show saved')])
-
-    const hidingAllRadio = h('input', {
-        id: 'hidingAllRadio',
-        name: 'displayMode',
-        type: 'radio',
-        class: 'form-radio',
-        checked: state.displayMode === DisplayMode.hidingAll,
-        onclick: [actions.setDisplayMode, DisplayMode.hidingAll]
-    }, []);
-    const hidingAllLabel = h('label', {
-        'class': 'form-radio-label',
-        'for': 'hidingAllRadio'
-    }, [text('Hide all')])
+    const modeChoices = [
+        ['showingAllRadio', DisplayMode.showingAll, 'Show all'],
+        ['showingSavedRadio', DisplayMode.showingSaved, 'Show saved'],
+        ['hidingAllRadio', DisplayMode.hidingAll, 'Hide all']
+    ]
+    const displayModeChooserComponents = [];
+    for (let choice of modeChoices) {
+        const [id, mode, labelText] = choice;
+        const radio = h('input', {
+            id: id,
+            name: 'displayMode',
+            type: 'radio',
+            class: 'form-radio',  // FIXME fix these classes to improve styling
+            checked: state.displayMode === mode,
+            onclick: [actions.setDisplayMode, mode]
+        }, []);
+        const label = h('label', {
+            'class': 'form-radio-label',
+            'for': id
+        }, [text(labelText)]);
+        const div = h('div', {'class': 'form-check form-check-inline'}, [radio, label]);
+        displayModeChooserComponents.push(div);
+    }
 
     const displayModeChooser = h('div',
         {class: 'form-check form-check-inline form-switch'},
-        [showingAllRadio, showingAllLabel, showingSavedRadio, showingSavedLabel, hidingAllRadio, hidingAllLabel]
+        displayModeChooserComponents
     );
 
     const preserveLinesInput = h('input', {
@@ -167,7 +153,7 @@ function annotationView(state: AppState) {
         'for': 'preserveLinesToggle'
     }, [text('Preserve lines')]);
     const preserveLines = h('div',
-        {class: 'form-check form-check-inline form-switch'},
+        {class: 'form-check form-check-inline form-switch ms-auto'},
         [preserveLinesInput, preserveLinesLabel]
     );
 
