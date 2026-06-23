@@ -104,6 +104,7 @@ export enum DisplayMode {
 export enum AppMode {
     annotation,
     editing,
+    review,
 }
 
 export interface AppState {
@@ -123,7 +124,9 @@ export function toggle<T>(set: Set<T>, x: T): void {
 
 export const defaultInitialState: AppState = {
   inputText: defaultText,
-  savedCharacters: new Set(),
+  savedCharacters: new Set(['人',
+      '之',
+      '初']),
   appMode: AppMode.annotation,
   displayMode: DisplayMode.showingSaved,
   preservingLines: true,

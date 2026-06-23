@@ -13,40 +13,44 @@ div #annotated {
   font-size: x-large;
   /*padding: 50px;*/
   line-height: 1.5em;
+
+  ruby {
+    display: inline-block;
+    width: 1.2em;
+    text-align: center;
+  }
+
+  ruby:hover {
+    color: darkred
+  }
+
+  ruby.highlighted {
+    color: darkred
+  }
+
+  rt {
+    display: block;
+    width: 100%;
+    font-size: small;
+    text-align: center;
+    opacity: 0;
+    font-family: sans-serif;
+    margin-top: 0.2em;
+    margin-bottom: -0.2em;
+  }
+
+  rt.visible {
+    opacity: 1;
+  }
+
+  ruby:hover rt {
+    opacity: 1;
+  }
 }
 
-#annotated ruby {
-  display: inline-block;
-  width: 1.2em;
-  text-align: center;
-}
-
-#annotated ruby:hover {
-  color: darkred
-}
-
-#annotated ruby.highlighted {
-  color: darkred
-}
-
-#annotated rt {
-  display: block;
-  width: 100%;
-  font-size: small;
-  text-align: center;
-  opacity: 0;
-  font-family: sans-serif;
-  margin-top: 0.2em;
-  margin-bottom: -0.2em;
-}
-
-#annotated rt.visible {
-  opacity: 1;
-}
-
-#annotated ruby:hover rt {
-  opacity: 1;
-}
+  .revisionChinese {
+    font-size: xxx-large;
+  }
 
 .chinese {
   font-family: "Kaiti TC", "AaKaiTi", "STKaiti", cursive;
@@ -63,4 +67,5 @@ div #annotated {
   display: flex;
   gap: 10px;
   margin-bottom: 20px;
+  align-items: center;
 }
