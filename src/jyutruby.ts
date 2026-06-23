@@ -75,6 +75,7 @@ const displayCharacter = (char: string, state: AppState) => {
         classList.push('highlighted');
     return h('ruby', {
         class: classList,
+        title: jyut,
         onclick: (state: AppState, event: MouseEvent): AppState => actions.handleCharacterClick(state, event, char)
     }, [rt, text(char)]);
 };

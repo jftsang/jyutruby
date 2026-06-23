@@ -41,7 +41,11 @@ div #annotated {
 }
 
 #annotated rt.visible {
-  opacity: 100%;
+  opacity: 1;
+}
+
+#annotated ruby:hover rt {
+  opacity: 1;
 }
 
 .chinese {

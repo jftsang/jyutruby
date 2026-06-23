@@ -3,7 +3,6 @@
     "experimentalDecorators": true,
     "jsxImportSource": "preact",
     "lib": [
-      "decorators",
       "dom",
       "es5",
       "scripthost",
