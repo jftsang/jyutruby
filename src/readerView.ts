@@ -81,7 +81,7 @@ export default function readerView(state: AppState) {
     }
 
     const displayModeChooser = h('div',
-        {class: 'form-check form-check-inline form-switch'},
+        {},
         displayModeChooserComponents
     );
 

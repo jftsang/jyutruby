@@ -16,6 +16,10 @@ div #reader {
   /*padding: 50px;*/
   line-height: 1.5em;
 
+  @media (max-width: 768px) {
+    font-size: large;
+  }
+
   ruby {
     display: inline-block;
     width: 1.2em;
