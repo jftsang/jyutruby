@@ -5,6 +5,11 @@ import {h, text} from "hyperapp";
 import {stateSaver} from "./storage";
 
 const actions = {
+    addNewSavedCharacter: (state: AppState, char: string): AppState => {
+        const savedCharacters = new Set(state.savedCharacters);
+        savedCharacters.add(char);
+        return {...state, savedCharacters};
+    },
     removeSavedCharacter: (state: AppState, char: string): AppState => {
         const savedCharacters = new Set(state.savedCharacters);
         savedCharacters.delete(char);
@@ -70,6 +75,27 @@ export default function reviewView(state: AppState) {
         ]);
         rows.push(row);
     }
+
+    const addNewCharInput = h('input', {
+        type: 'text',
+        class: 'form-control text-center chinese revisionChinese'
+    })
+    const addCharRow = h('tr', {}, [
+      h('td', {class: 'text-center chinese revisionChinese'}, [
+        addNewCharInput
+      ]),
+      h('td', {}),
+      h('td', {}),
+      h('td', {}),
+      h('td', {class: 'text-center'}, [
+        h('button', {
+          class: 'btn btn-success',
+          onclick: (state) => actions.addNewSavedCharacter(state, addNewCharInput.node.value)
+        }, [text('Add')])
+      ])
+    ])
+    rows.push(addCharRow);
+
     const table = h('table',
         {class: 'table'},
         rows
