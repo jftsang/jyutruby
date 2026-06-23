@@ -5,9 +5,11 @@ $primary: #333333;
 @import url(https://db.onlinewebfonts.com/c/2f80295984700be025edc6c17f38484d?family=AaKaiTi);
 @import url(https://db.onlinewebfonts.com/c/1ee9941f1b8c128110ca4307dda59917?family=STKaiti);
 
-body {
-  background-color: beige;
+:root {
+  --bs-body-bg: beige;
 }
+
+$primary: darkred;
 
 div #annotated {
   font-size: x-large;
@@ -21,11 +23,11 @@ div #annotated {
   }
 
   ruby:hover {
-    color: darkred
+    color: $primary;
   }
 
   ruby.highlighted {
-    color: darkred
+    color: $primary;
   }
 
   rt {
@@ -63,9 +65,21 @@ div #annotated {
   min-height: 4rem; /* Optional: prevents default single-line height */
 }
 
-#topbar {
+#topBar {
   display: flex;
   gap: 10px;
   margin-bottom: 20px;
   align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  background-color: beige;
+  padding-top: 48px;
+}
+
+#modeChooser {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background-color: beige;
 }

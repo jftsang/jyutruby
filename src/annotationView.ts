@@ -103,7 +103,7 @@ export default function annotationView(state: AppState) {
     );
 
     const topBar =  h(
-        'div', {class: 'topbar'}, [displayModeChooser, preserveLines]
+        'div', {id: 'topBar', class: 'topbar'}, [displayModeChooser, preserveLines]
     );
     const annotatedDisplay = h('article', {}, [
         h('div', {
