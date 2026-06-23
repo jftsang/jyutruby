@@ -1,6 +1,3 @@
-import {loadFromStorage} from "./storage.js";
-import {cantojpmin_data} from "./CantoJpMin/scripts/modules_format/cantojpmin_data.js";
-
 export const defaultText = `人之初，性本善，性相近，習相遠；
 苟不教，性乃遷，教之道，貴以專。
 昔孟母，擇鄰處，子不學，斷機杼；
@@ -98,7 +95,23 @@ export const defaultText = `人之初，性本善，性相近，習相遠；
 勤有功，戲無益，戒之哉，宜勉力。
 `;
 
-export const defaultInitialState = {
+export interface AppState {
+    inputText: string;
+    annotatedCharacters: Set<any>;
+    savedCharacters: Set<any>;
+    editing: boolean;
+    showingAll: boolean;
+    preservingLines: boolean
+}
+
+export function toggle<T>(set: Set<T>, x: T): void {
+    if (set.has(x))
+        set.delete(x)
+    else
+        set.add(x)
+}
+
+export const defaultInitialState: AppState = {
   inputText: defaultText,
   annotatedCharacters: new Set(),
   savedCharacters: new Set(),
