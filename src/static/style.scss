@@ -22,7 +22,7 @@ div #reader {
 
   ruby {
     display: inline-block;
-    width: 1.2em;
+    width: 1.5em;
     text-align: center;
   }
 
@@ -43,6 +43,10 @@ div #reader {
     font-family: sans-serif;
     margin-top: 0.2em;
     margin-bottom: -0.2em;
+
+    @media (max-width: 768px) {
+      font-size: x-small;
+    }
   }
 
   rt.visible {
