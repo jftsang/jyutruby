@@ -30,24 +30,36 @@ export default function reviewView(state: AppState) {
     }
 
     const rows = [];
+    const ctr = {class: 'text-center'}
+    rows.push(
+      h('thead', {}, [
+        h('tr', {}, [
+          h('th', ctr, [text('character')]),
+          h('th', ctr, [text('main reading')]),
+          h('th', ctr, [text('alternative readings')]),
+          h('th', ctr, [text('definition on mdbg')]),
+          h('th', ctr, [text('remove')])
+        ])
+      ])
+    )
     for (const char of state.savedCharacters) {
-        const readings: string[] = toJyutpingArray(char);
         const mainReading = toJyutping(char);
         if (!mainReading) continue;  // shouldn't happen but just in case
-
+        const readings: string[] = toJyutpingArray(char);
+        const alternativeReadings = readings.slice(1).toString().replaceAll(',', ', ');
 
         const row = h('tr', {class: ''}, [
-            h('td', {class: 'chinese revisionChinese'}, [text(char)]),
-            h('td', {}, [text(mainReading)]),
-            h('td', {}, [text(readings.toString().replaceAll(',', ', '))]),
-            h('td', {}, [
+            h('td', {class: 'text-center chinese revisionChinese'}, [text(char)]),
+            h('td', ctr, [text(mainReading)]),
+            h('td', ctr, [text(alternativeReadings)]),
+            h('td', ctr, [
                h('a', {
                    class: 'link',
                    href: `https://www.mdbg.net/chinese/dictionary?page=chardict&cdqchi=${char}`
                }, [text('definition')])
             ]),
             h('td', {
-                class: 'clickable',
+                class: 'clickable text-center',
                 onclick: [actions.removeSavedCharacter, char]
             }, [h('i', {class: "bi bi-x"})])
         ]);
