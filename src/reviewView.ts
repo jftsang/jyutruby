@@ -55,7 +55,8 @@ export default function reviewView(state: AppState) {
           h('td', ctr, [
             h('a', {
               class: 'link',
-              href: `https://www.mdbg.net/chinese/dictionary?page=chardict&cdqchi=${char}`
+              href: `https://www.mdbg.net/chinese/dictionary?page=chardict&cdqchi=${char}`,
+              target: '_blank',
             }, [text('definition')])
           ]),
           h('td', {
