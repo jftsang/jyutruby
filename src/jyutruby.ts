@@ -1,7 +1,7 @@
 import {AppMode, AppState, defaultInitialState} from "./state";
 import {loadFromStorage, stateSaver} from "./storage";
 import editingView from "./editingView";
-import annotationView from "./annotationView";
+import readerView from "./readerView";
 
 // @ts-ignore
 import {app, h, text} from "hyperapp";
@@ -24,14 +24,14 @@ for (const [key, value] of Object.entries(actions)) {
 
 
 function modeChooser(state: AppState) {
-    const viewButton = h(
+    const readButton = h(
         'a',
         {
             href: '#',
-            onclick: [actions.setAppMode, AppMode.annotation],
-            class: 'nav-link' + (state.appMode === AppMode.annotation ? ' active' : '')
+            onclick: [actions.setAppMode, AppMode.reading],
+            class: 'nav-link' + (state.appMode === AppMode.reading ? ' active' : '')
         },
-        [text('view')]
+        [text('read')]
     )
     const editButton = h(
         'a',
@@ -54,15 +54,15 @@ function modeChooser(state: AppState) {
     return h('nav', {
         id: 'modeChooser',
         class: 'nav nav-tabs justify-content-center'
-    }, [viewButton, editButton, reviewButton])
+    }, [readButton, editButton, reviewButton])
 }
 
 
 function view(state: AppState) {
     let body;
     switch (state.appMode) {
-        case AppMode.annotation:
-            body = annotationView(state);
+        case AppMode.reading:
+            body = readerView(state);
             break;
         case AppMode.editing:
             body = editingView(state);

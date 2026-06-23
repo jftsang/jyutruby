@@ -55,7 +55,7 @@ const displayCharacter = (char: string, state: AppState) => {
     }, [rt, text(char)]);
 };
 
-export default function annotationView(state: AppState) {
+export default function readerView(state: AppState) {
     const modeChoices = [
         ['showingAllRadio', DisplayMode.showingAll, 'Show all'],
         ['showingSavedRadio', DisplayMode.showingSaved, 'Show saved'],
@@ -105,11 +105,11 @@ export default function annotationView(state: AppState) {
     const topBar =  h(
         'div', {id: 'topBar', class: 'topbar'}, [displayModeChooser, preserveLines]
     );
-    const annotatedDisplay = h('article', {}, [
+    const readerDisplay = h('article', {}, [
         h('div', {
-            id: 'annotated',
+            id: 'reader',
             class: 'chinese mx-0 mx-md-auto col-md-7'
         }, Array(...state.inputText).map(char => displayCharacter(char, state)))
     ]);
-    return h('div', {}, [topBar, annotatedDisplay]);
+    return h('div', {}, [topBar, readerDisplay]);
 }

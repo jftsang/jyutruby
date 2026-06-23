@@ -102,7 +102,7 @@ export enum DisplayMode {
 }
 
 export enum AppMode {
-    annotation,
+    reading,
     editing,
     review,
 }
@@ -127,7 +127,7 @@ export const defaultInitialState: AppState = {
   savedCharacters: new Set(['人',
       '之',
       '初']),
-  appMode: AppMode.annotation,
+  appMode: AppMode.reading,
   displayMode: DisplayMode.showingSaved,
   preservingLines: true,
 };

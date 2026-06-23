@@ -78,7 +78,8 @@ export default function reviewView(state: AppState) {
 
     const addNewCharInput = h('input', {
         type: 'text',
-        class: 'form-control text-center chinese revisionChinese'
+        class: 'form-control text-center chinese revisionChinese bg-white',
+        maxlength: '1',
     })
     const addCharRow = h('tr', {}, [
       h('td', {class: 'text-center chinese revisionChinese'}, [
