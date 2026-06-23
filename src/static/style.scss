@@ -22,7 +22,11 @@ div #annotated {
 }
 
 #annotated ruby:hover {
-  color: darkred;
+  color: darkred
+}
+
+#annotated ruby.highlighted {
+  color: darkred
 }
 
 #annotated rt {

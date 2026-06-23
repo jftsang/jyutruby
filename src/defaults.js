@@ -101,6 +101,7 @@ export const defaults = `人之初，性本善，性相近，習相遠；
 export const defaultInitialState = {
   inputText: defaults,
   annotatedCharacters: new Set(),
+  savedCharacters: new Set(),
   editing: false,
   showingAll: false,
   preservingLines: true,

@@ -1,7 +1,7 @@
 import {app, h, text} from "hyperapp";
 import {defaultInitialState} from "./defaults.js";
 import {cantojpmin_data} from "./CantoJpMin/scripts/modules_format/cantojpmin_data.js";
-import {loadFromStorage, stateSaver} from "./storage.js";
+import {loadFromStorage, stateSaver, toggle} from "./storage.js";
 
 
 const initialState = {
@@ -17,30 +17,20 @@ const actions = {
   setInputText: (state, event) => {
     return {...state, inputText: event.target.value};
   },
-  toggleRuby: (state, event, char) => {
+  handleCharacterClick: (state, event, char) => {
     event.preventDefault();
 
-    // if holding down shift, replace annotations
-    // otherwise just toggle this one
-    const sticky = !event.shiftKey;
+    // if holding down shift
+    const saving = event.shiftKey;
 
     const annotatedCharacters = new Set(state.annotatedCharacters);
-    if (sticky) {
-      if (annotatedCharacters.has(char)) {
-        annotatedCharacters.delete(char);
-      } else {
-        annotatedCharacters.add(char);
-      }
-    } else {
-      if (state.annotatedCharacters.has(char)) {
-        annotatedCharacters.delete(char);
-      } else {
-        annotatedCharacters.clear()
-        annotatedCharacters.add(char);
-      }
-    }
+    const savedCharacters = new Set(state.savedCharacters);
 
-    return {...state, annotatedCharacters: annotatedCharacters};
+    if (saving)
+      toggle(savedCharacters, char)
+    toggle(annotatedCharacters, char)
+
+    return {...state, annotatedCharacters: annotatedCharacters, savedCharacters: savedCharacters}
   },
   toggleEditing: (state) => {
     return {...state, editing: !state.editing};
@@ -71,9 +61,12 @@ const displayCharacter = (char, state) => {
     return text(char);
   }
   const rt = h('rt', {class: isVisible ? 'visible' : ''}, [text(jyut)])
+  const classList = ['clickable'];
+  if (state.savedCharacters.has(char))
+    classList.push('highlighted');
   return h('ruby', {
-    class: 'clickable',
-    onclick: (state, event) => actions.toggleRuby(state, event, char)
+    class: classList,
+    onclick: (state, event) => actions.handleCharacterClick(state, event, char)
   }, [rt, text(char)]);
 };
 

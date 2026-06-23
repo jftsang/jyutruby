@@ -24,3 +24,10 @@ export const stateSaver = (action) => {
     return newState;
   }
 }
+
+export function toggle(set, x) {
+  if (set.has(x))
+    set.delete(x)
+  else
+    set.add(x)
+}
