@@ -6,6 +6,7 @@ import readerView from "./readerView";
 // @ts-ignore
 import {app, h, text} from "hyperapp";
 import reviewView from "./reviewView";
+import flashcardView from "./flashcardView";
 
 const initialState: AppState = {
     ...defaultInitialState,
@@ -24,37 +25,29 @@ for (const [key, value] of Object.entries(actions)) {
 
 
 function modeChooser(state: AppState) {
-    const readButton = h(
-        'a',
-        {
-            href: '#',
-            onclick: [actions.setAppMode, AppMode.reading],
-            class: 'nav-link' + (state.appMode === AppMode.reading ? ' active' : '')
-        },
-        [text('read')]
-    )
-    const editButton = h(
-        'a',
-        {
-            href: '#',
-            onclick: [actions.setAppMode, AppMode.editing],
-            class: 'nav-link' + (state.appMode === AppMode.editing ? ' active' : '')
-        },
-        [text('edit')]
-    )
-    const reviewButton = h(
-        'a',
-        {
-            href: '#',
-            onclick: [actions.setAppMode, AppMode.review],
-            class: 'nav-link' + (state.appMode === AppMode.review ? ' active' : '')
-        },
-        [text('review')]
-    )
+    const options = [
+        [AppMode.reading, 'read'],
+        [AppMode.editing, 'edit'],
+        [AppMode.review, 'review'],
+        [AppMode.flashcard, 'flashcards'],
+    ]
+    const tabs = [];
+    for (const [mode, label] of options) {
+        const tab = h(
+            'a',
+            {
+                href: '#',
+                onclick: [actions.setAppMode, mode],
+                class: 'nav-link' + (state.appMode === mode ? ' active' : '')
+            },
+            [text(label)]
+        )
+        tabs.push(tab)
+    }
     return h('nav', {
         id: 'modeChooser',
         class: 'nav nav-tabs justify-content-center'
-    }, [readButton, editButton, reviewButton])
+    }, tabs)
 }
 
 
@@ -69,6 +62,9 @@ function view(state: AppState) {
             break;
         case AppMode.review:
             body = reviewView(state);
+            break;
+        case AppMode.flashcard:
+            body = flashcardView(state);
             break;
         default:
             throw new Error('Unknown app mode');

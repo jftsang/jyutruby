@@ -105,6 +105,7 @@ export enum AppMode {
     reading,
     editing,
     review,
+    flashcard,
 }
 
 export interface AppState {

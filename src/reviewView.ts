@@ -48,10 +48,10 @@ export default function reviewView(state: AppState) {
         ])
     )
     for (const char of state.savedCharacters) {
-        const mainReading = toJyutping(char);
-        if (!mainReading) continue;  // shouldn't happen but just in case
-        const readings: string[] = toJyutpingArray(char);
-        const alternativeReadings = readings.slice(1).toString().replaceAll(',', ', ');
+        const mainReading = toJyutping(char) ?? '';
+
+        const allReadings: string[] = toJyutpingArray(char);
+        const alternativeReadings = allReadings !== null && allReadings.length > 1 ? allReadings.slice(1).toString().replaceAll(',', ', ') : '';
 
         const row = h('tr', {class: ''}, [
           h('td', {class: 'text-center chinese revisionChinese'}, [text(char)]),
