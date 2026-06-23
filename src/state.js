@@ -1,7 +1,7 @@
 import {loadFromStorage} from "./storage.js";
 import {cantojpmin_data} from "./CantoJpMin/scripts/modules_format/cantojpmin_data.js";
 
-export const defaults = `人之初，性本善，性相近，習相遠；
+export const defaultText = `人之初，性本善，性相近，習相遠；
 苟不教，性乃遷，教之道，貴以專。
 昔孟母，擇鄰處，子不學，斷機杼；
 竇燕山，有義方，教五子，名俱揚。
@@ -99,7 +99,7 @@ export const defaults = `人之初，性本善，性相近，習相遠；
 `;
 
 export const defaultInitialState = {
-  inputText: defaults,
+  inputText: defaultText,
   annotatedCharacters: new Set(),
   savedCharacters: new Set(),
   editing: false,

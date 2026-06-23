@@ -1,5 +1,5 @@
 import {app, h, text} from "hyperapp";
-import {defaultInitialState} from "./defaults.js";
+import {defaultInitialState} from "./state.js";
 import {cantojpmin_data} from "./CantoJpMin/scripts/modules_format/cantojpmin_data.js";
 import {loadFromStorage, stateSaver, toggle} from "./storage.js";
 
