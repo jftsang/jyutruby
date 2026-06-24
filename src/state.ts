@@ -1,3 +1,5 @@
+import {FlashcardState} from "./flashcardView";
+
 export const defaultText = `人之初，性本善，性相近，習相遠；
 苟不教，性乃遷，教之道，貴以專。
 昔孟母，擇鄰處，子不學，斷機杼；
@@ -114,6 +116,7 @@ export interface AppState {
     appMode: AppMode,
     displayMode: DisplayMode,
     preservingLines: boolean
+    flashcardState: FlashcardState;
 }
 
 export function toggle<T>(set: Set<T>, x: T): void {
@@ -131,4 +134,5 @@ export const defaultInitialState: AppState = {
   appMode: AppMode.reading,
   displayMode: DisplayMode.showingSaved,
   preservingLines: true,
+  flashcardState: {currentCharacter: null, flipped: false},
 };
