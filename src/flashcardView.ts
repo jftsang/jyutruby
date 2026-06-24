@@ -1,7 +1,7 @@
 import {AppState} from "./state";
 // @ts-ignore
 import {h, text} from "hyperapp";
-import {toJyutping} from "./chinese";
+import {mdbgUrl, toJyutping} from "./chinese";
 
 export interface FlashcardState {
     currentCharacter: string;
@@ -22,6 +22,7 @@ const actions = {
         return {...state}
     },
     next: (state: AppState): AppState => {
+        state.flashcardState.flipped = false;
         state.flashcardState.currentCharacter = getRandomItem(state.savedCharacters);
         return {...state}
     },
@@ -35,17 +36,32 @@ export default function flashcardView(state: AppState) {
 
     const frontSide = h('div', {
         id: 'flashcardFront',
-        class: 'flashcard chinese text-center'
+        class: 'flashcard chinese text-center flashcard-face flashcard-front'
     }, text(fsstate.currentCharacter))
     const backSide = h('div', {
-            id: 'flashcardBack',
-            class: 'flashcard chinese text-center'
-        }, text(toJyutping(fsstate.currentCharacter))
-    )
+        id: 'flashcardBack',
+        class: 'flashcard text-center flashcard-face flashcard-back'
+    }, [
+        h('div', {},
+        h('span', {
+            class: 'chinese',
+            style: {'font-size': '8rem'}
+        }, text(toJyutping(fsstate.currentCharacter))),
+        ),
+        h('a', {
+            class: 'link',
+            href: mdbgUrl(fsstate.currentCharacter),
+            target: '_blank',
+        }, [text('definition')])
+    ])
 
     const flashcard = h('div', {
         id: 'flashcard',
-        class: 'flashcard row justify-content-center w-100 mx-auto'
+        class: [
+            'flashcard',
+            'row', 'justify-content-center', 'w-100', 'mx-auto', 'mb-5',
+            (fsstate.flipped ? ' flipped' : '')
+        ],
     }, [frontSide, backSide])
 
     const buttons = []
@@ -63,7 +79,7 @@ export default function flashcardView(state: AppState) {
     )
     const buttonsContainer = h('div', {
         id: 'opts',
-        class: 'opts row justify-content-center w-100 mx-auto'
+        class: 'opts row justify-content-center w-100 mx-auto my-4'
     }, buttons)
 
     return h('div',

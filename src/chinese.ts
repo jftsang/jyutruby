@@ -8,6 +8,7 @@ export function toJyutping(char: string): string | null {
         return null;
     }
 }
+
 export function toJyutpingArray(char: string): string[] | null {
     if (Object.hasOwn(cantojpmin_data, char)) {
         // @ts-ignore
@@ -15,4 +16,8 @@ export function toJyutpingArray(char: string): string[] | null {
     } else {
         return null;
     }
+}
+
+export function mdbgUrl(char: string): string {
+    return `https://www.mdbg.net/chinese/dictionary?page=chardict&cdqchi=${char}`;
 }

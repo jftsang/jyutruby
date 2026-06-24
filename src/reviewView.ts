@@ -1,4 +1,4 @@
-import {toJyutping, toJyutpingArray} from "./chinese.js";
+import {mdbgUrl, toJyutping, toJyutpingArray} from "./chinese.js";
 import {AppState} from "./state";
 // @ts-ignore
 import {h, text} from "hyperapp";
@@ -74,7 +74,7 @@ export default function reviewView(state: AppState) {
           h('td', ctr, [
             h('a', {
               class: 'link',
-              href: `https://www.mdbg.net/chinese/dictionary?page=chardict&cdqchi=${char}`,
+              href: mdbgUrl(char),
               target: '_blank',
             }, [text('definition')])
           ]),
