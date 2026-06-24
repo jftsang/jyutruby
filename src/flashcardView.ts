@@ -1,7 +1,6 @@
-import {AppState} from "./state";
-// @ts-ignore
 import {h, text} from "hyperapp";
-import {mdbgUrl, toJyutping} from "./chinese";
+import {AppState} from "./state.js";
+import {mdbgUrl, toJyutping} from "./chinese.js";
 
 export interface FlashcardState {
     currentCharacter: string;
@@ -47,7 +46,7 @@ export default function flashcardView(state: AppState) {
         h('div', {},
         h('span', {
             class: 'chinese',
-            style: {'font-size': '8rem'}
+            style: {'fontSize': '8rem'}
         }, text(toJyutping(fsstate.currentCharacter))),
         ),
         h('a', {

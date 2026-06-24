@@ -1,4 +1,4 @@
-import {FlashcardState} from "./flashcardView";
+import {FlashcardState} from "./flashcardView.js";
 
 export const defaultText = `人之初，性本善，性相近，習相遠；
 苟不教，性乃遷，教之道，貴以專。

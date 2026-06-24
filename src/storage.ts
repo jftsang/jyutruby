@@ -1,4 +1,4 @@
-import {AppState} from "./state";
+import {AppState} from "./state.js";
 
 const STORAGE_KEY = 'jyutruby';
 

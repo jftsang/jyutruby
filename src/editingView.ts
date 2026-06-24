@@ -1,7 +1,7 @@
-import {AppState} from "./state";
+import {AppState} from "./state.js";
 // @ts-ignore
 import {h, text} from "hyperapp";
-import {stateSaver} from "./storage";
+import {stateSaver} from "./storage.js";
 
 const actions = {
     setInputText: (state: AppState, event: InputEvent): AppState => {

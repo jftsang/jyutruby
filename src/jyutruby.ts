@@ -88,7 +88,7 @@ app({
             ['r', AppMode.flashcard],
           ]
           for (const [k, newMode] of modeShortcuts) {
-            if (e.key === k) dispatch((state) => actions.setAppMode(state, newMode));
+            if (e.key === k) dispatch((state: AppState) => actions.setAppMode(state, newMode));
           }
 
           if (state.appMode === AppMode.flashcard) {

@@ -1,8 +1,7 @@
-import {mdbgUrl, toJyutping, toJyutpingArray} from "./chinese.js";
-import {AppState} from "./state";
-// @ts-ignore
 import {h, text} from "hyperapp";
-import {stateSaver} from "./storage";
+import {mdbgUrl, toJyutping, toJyutpingArray} from "./chinese.js";
+import {AppState} from "./state.js";
+import {stateSaver} from "./storage.js";
 
 const actions = {
     addNewSavedCharacter: (state: AppState, char: string): AppState => {
@@ -105,7 +104,7 @@ export default function reviewView(state: AppState) {
       h('td', {class: 'text-center'}, [
         h('button', {
           class: 'btn btn-success',
-          onclick: (state) => actions.addNewSavedCharacter(state, addNewCharInput.node.value)
+          onclick: (state: AppState) => actions.addNewSavedCharacter(state, addNewCharInput.node.value)
         }, [text('Add')])
       ])
     ])

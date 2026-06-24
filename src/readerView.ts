@@ -1,8 +1,7 @@
-import {AppState, DisplayMode, toggle} from "./state";
-// @ts-ignore
 import {h, text} from "hyperapp";
-import {toJyutping} from "./chinese";
-import {stateSaver} from "./storage";
+import {toJyutping} from "./chinese.js";
+import {AppState, DisplayMode, toggle} from "./state.js";
+import {stateSaver} from "./storage.js";
 
 const actions = {
     handleCharacterClick: (state: AppState, event: MouseEvent, char: string): AppState => {
@@ -56,7 +55,7 @@ const displayCharacter = (char: string, state: AppState) => {
 };
 
 export default function readerView(state: AppState) {
-    const modeChoices = [
+    const modeChoices: [string, DisplayMode, string][] = [
         ['showingAllRadio', DisplayMode.showingAll, 'Show all'],
         ['showingSavedRadio', DisplayMode.showingSaved, 'Show saved'],
         ['hidingAllRadio', DisplayMode.hidingAll, 'Hide all']
