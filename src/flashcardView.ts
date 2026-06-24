@@ -16,7 +16,7 @@ function getRandomItem<S>(set: Set<S>): S | null {
     return items[Math.floor(Math.random() * items.length)];
 }
 
-const actions = {
+export const actions = {
     flip: (state: AppState): AppState => {
         state.flashcardState.flipped = !state.flashcardState.flipped;
         return {...state}
@@ -36,11 +36,13 @@ export default function flashcardView(state: AppState) {
 
     const frontSide = h('div', {
         id: 'flashcardFront',
-        class: 'flashcard chinese text-center flashcard-face flashcard-front'
+        class: 'flashcard chinese text-center flashcard-face flashcard-front',
+        key: fsstate.currentCharacter + '-front'
     }, text(fsstate.currentCharacter))
     const backSide = h('div', {
         id: 'flashcardBack',
-        class: 'flashcard text-center flashcard-face flashcard-back'
+        class: 'flashcard text-center flashcard-face flashcard-back',
+        key: fsstate.currentCharacter + '-back'
     }, [
         h('div', {},
         h('span', {

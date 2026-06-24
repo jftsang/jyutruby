@@ -7,6 +7,7 @@ import readerView from "./readerView";
 import {app, h, text} from "hyperapp";
 import reviewView from "./reviewView";
 import flashcardView from "./flashcardView";
+import {actions as flashcardActions} from "./flashcardView";
 
 const initialState: AppState = {
     ...defaultInitialState,
@@ -77,6 +78,20 @@ function view(state: AppState) {
 app({
     node: document.getElementById('app'),
     view: view,
-    subscriptions: (state) => [],
     init: initialState,
+    subscriptions: (state) => [
+        [
+            (dispatch, props) => {
+                const handleKeydown = (e) => {
+                    if (state.appMode === AppMode.flashcard) {
+                        if (e.key === 'f' || e.key === 'F') dispatch(flashcardActions.flip);
+                        if (e.key === 'n' || e.key === 'N') dispatch(flashcardActions.next);
+                    }
+                };
+                window.addEventListener('keydown', handleKeydown);
+                return () => window.removeEventListener('keydown', handleKeydown);
+            },
+            {}
+        ]
+    ]
 });
