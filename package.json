@@ -3,13 +3,19 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "build": "npx parcel build src/index.html",
-    "dev": "npx parcel watch src/index.html",
-    "clean": "rm -r dist"
+    "build": "npx parcel build src/index.html src/sw.ts && cp -R public/* dist",
+    "dev": "npx parcel watch src/index.html src/sw.ts && cp -R public/* dist",
+    "devserver": "npx parcel serve src/index.html src/sw.ts && cp -R public/* dist",
+    "clean": "rm -rf dist"
   },
   "targets": {
     "default": {
-      "publicUrl": "./"
+      "publicUrl": "./",
+      "distDir": "dist"
+    },
+    "serviceWorker": {
+      "source": "src/sw.ts",
+      "distDir": "dist"
     }
   },
   "dependencies": {
@@ -22,6 +28,7 @@
     "@parcel/packager-raw-url": "^2.16.4",
     "@parcel/transformer-sass": "^2.16.4",
     "@parcel/transformer-webmanifest": "^2.16.4",
-    "parcel": "^2.16.4"
+    "parcel": "^2.16.4",
+    "parcel-namer-rewrite": "^2.10.3-rc.5"
   }
 }
