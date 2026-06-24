@@ -79,10 +79,15 @@ app({
     node: document.getElementById('app'),
     view: view,
     init: initialState,
-    subscriptions: (state) => [
+    subscriptions: (state: AppState) => [
         [
             (dispatch, props) => {
                 const handleKeydown = (e) => {
+                    if (e.key === 'q' || e.key === 'Q') dispatch((state) => actions.setAppMode(state, AppMode.reading));
+                    if (e.key === 'w' || e.key === 'W') dispatch((state) => actions.setAppMode(state, AppMode.editing));
+                    if (e.key === 'e' || e.key === 'E') dispatch((state) => actions.setAppMode(state, AppMode.review));
+                    if (e.key === 'r' || e.key === 'R') dispatch((state) => actions.setAppMode(state, AppMode.flashcard));
+
                     if (state.appMode === AppMode.flashcard) {
                         if (e.key === 'f' || e.key === 'F') dispatch(flashcardActions.flip);
                         if (e.key === 'n' || e.key === 'N') dispatch(flashcardActions.next);
