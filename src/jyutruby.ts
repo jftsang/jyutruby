@@ -1,13 +1,11 @@
-import {AppMode, AppState, defaultInitialState} from "./state";
-import {loadFromStorage, stateSaver} from "./storage";
-import editingView from "./editingView";
-import readerView from "./readerView";
+import {AppMode, AppState, defaultInitialState} from "./state.js";
+import {loadFromStorage, stateSaver} from "./storage.js";
+import editingView from "./editingView.js";
+import readerView from "./readerView.js";
 
-// @ts-ignore
 import {app, h, text} from "hyperapp";
-import reviewView from "./reviewView";
-import flashcardView from "./flashcardView";
-import {actions as flashcardActions} from "./flashcardView";
+import reviewView from "./reviewView.js";
+import flashcardView, {actions as flashcardActions} from "./flashcardView.js";
 
 const initialState: AppState = {
     ...defaultInitialState,
@@ -26,7 +24,7 @@ for (const [key, value] of Object.entries(actions)) {
 
 
 function modeChooser(state: AppState) {
-    const options = [
+    const options: [AppMode, string][] = [
         [AppMode.reading, 'read'],
         [AppMode.editing, 'edit'],
         [AppMode.review, 'review'],
@@ -76,27 +74,32 @@ function view(state: AppState) {
 
 
 app({
-    node: document.getElementById('app'),
-    view: view,
-    init: initialState,
-    subscriptions: (state: AppState) => [
-        [
-            (dispatch, props) => {
-                const handleKeydown = (e) => {
-                    if (e.key === 'q' || e.key === 'Q') dispatch((state) => actions.setAppMode(state, AppMode.reading));
-                    if (e.key === 'w' || e.key === 'W') dispatch((state) => actions.setAppMode(state, AppMode.editing));
-                    if (e.key === 'e' || e.key === 'E') dispatch((state) => actions.setAppMode(state, AppMode.review));
-                    if (e.key === 'r' || e.key === 'R') dispatch((state) => actions.setAppMode(state, AppMode.flashcard));
+  node: document.getElementById('app'),
+  view: view,
+  init: initialState,
+  subscriptions: (state: AppState) => [
+    [
+      (dispatch, props) => {
+        const handleKeydown = (e) => {
+          const modeShortcuts: [string, AppMode][] = [
+            ['q', AppMode.reading],
+            ['w', AppMode.editing],
+            ['e', AppMode.review],
+            ['r', AppMode.flashcard],
+          ]
+          for (const [k, newMode] of modeShortcuts) {
+            if (e.key === k) dispatch((state) => actions.setAppMode(state, newMode));
+          }
 
-                    if (state.appMode === AppMode.flashcard) {
-                        if (e.key === 'f' || e.key === 'F') dispatch(flashcardActions.flip);
-                        if (e.key === 'n' || e.key === 'N') dispatch(flashcardActions.next);
-                    }
-                };
-                window.addEventListener('keydown', handleKeydown);
-                return () => window.removeEventListener('keydown', handleKeydown);
-            },
-            {}
-        ]
+          if (state.appMode === AppMode.flashcard) {
+            if (e.key === 'f' || e.key === 'F') dispatch(flashcardActions.flip);
+            if (e.key === 'n' || e.key === 'N') dispatch(flashcardActions.next);
+          }
+        };
+        window.addEventListener('keydown', handleKeydown);
+        return () => window.removeEventListener('keydown', handleKeydown);
+      },
+      {}
     ]
+  ]
 });
