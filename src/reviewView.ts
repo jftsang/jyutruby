@@ -117,10 +117,7 @@ export default function reviewView(state: AppState) {
     ])
     rows.push(addCharRow);
 
-    const table = h('table',
-        {class: 'table'},
-        rows
-    );
+    const table = h('table', {class: 'table'}, rows);
 
     const sortCharactersButton = h('button', {
         class: 'btn btn-secondary',

@@ -130,6 +130,10 @@ div #reader {
   z-index: 999;
   background-color: beige;
   padding-top: 48px;
+
+  @media (max-width: 768px) {
+    position: static;
+  }
 }
 
 #modeChooser {
@@ -140,7 +144,7 @@ div #reader {
 }
 
 footer {
-  position: fixed;
+  position: static;
   bottom: 0;
   left: 0;
   right: 0;
