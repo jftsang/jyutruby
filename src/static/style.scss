@@ -1,4 +1,18 @@
-$primary: #333333;
+$primary: darkslategray;
+$danger: crimson;
+$secondary: darkred;
+
+//$nav-tabs-border-width: 2px;
+$nav-link-padding-y: 0.2rem;
+$nav-tabs-border-radius: 0;
+$nav-tabs-link-color: black;
+$nav-tabs-link-hover-color: black;
+$nav-tabs-link-active-color: black;
+$nav-tabs-link-active-bg: beige;
+$nav-tabs-link-active-border-color: silver;
+
+$table-bg: transparent;
+
 
 @import "bootstrap/scss/bootstrap";
 
@@ -6,10 +20,35 @@ $primary: #333333;
 @import url(https://db.onlinewebfonts.com/c/1ee9941f1b8c128110ca4307dda59917?family=STKaiti);
 
 :root {
-  --bs-body-bg: beige;
+  //--bs-body-bg: beige;
 }
 
-$primary: darkred;
+body {
+  background-image: url('./background.png');
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+#app {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+
+#modeChooser {
+  position: sticky;
+  top: 0;
+  border-bottom: 0;
+  z-index: 1000;
+  background-image: url('./wood.jpg');
+
+  .nav-link:not(.active) {
+    background-color: silver;
+  }
+}
+
 
 div #reader {
   font-size: x-large;
@@ -27,11 +66,11 @@ div #reader {
   }
 
   ruby:hover {
-    color: $primary;
+    color: $secondary;
   }
 
   ruby.highlighted {
-    color: $primary;
+    color: $secondary;
   }
 
   rt {
@@ -118,9 +157,10 @@ div #reader {
   width: 100%;
   field-sizing: content;
   min-height: 4rem; /* Optional: prevents default single-line height */
+  background-image: url('./background.png');
 }
 
-#topBar {
+#readerOptionsBar {
   display: flex;
   gap: 10px;
   margin-bottom: 20px;
@@ -128,29 +168,23 @@ div #reader {
   position: sticky;
   top: 0;
   z-index: 999;
-  background-color: beige;
-  padding-top: 48px;
+  padding-top: 2rem;
+  color: silver;
+  background-image: url('./wood.jpg');
 
   @media (max-width: 768px) {
     position: static;
   }
 }
 
-#modeChooser {
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  background-color: beige;
-}
-
 footer {
-  position: static;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background-color: beige;
-  padding-top: 20px;
+  margin-top: 1rem;
+  padding-top: 0.5rem;
   z-index: 999;
+  color: silver;
+  background-image: url('./wood.jpg');
+
+  a { color: silver; }
 }
 
 .bottombar {

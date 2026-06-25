@@ -137,7 +137,7 @@ export default function readerView(state: AppState) {
     const spacer = h('div', {class: 'me-3'}, []);
 
     const topBar =  h(
-        'div', {id: 'topBar', class: 'topbar'}, [displayModeChooser, spacer, scriptConversionChooser, preserveLines]
+        'div', {id: 'readerOptionsBar'}, [displayModeChooser, spacer, scriptConversionChooser, preserveLines]
     );
     const readerDisplay = h('article', {}, [
         h('div', {

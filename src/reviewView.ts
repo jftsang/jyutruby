@@ -120,12 +120,12 @@ export default function reviewView(state: AppState) {
     const table = h('table', {class: 'table'}, rows);
 
     const sortCharactersButton = h('button', {
-        class: 'btn btn-secondary',
+        class: 'btn btn-primary',
         onclick: actions.sortCharacters
     }, [text('sort by strokes')])
 
     const sortByJyutpingButton = h('button', {
-        class: 'btn btn-secondary',
+        class: 'btn btn-primary',
         onclick: actions.sortByJyutping
     }, [text('sort by jyutping')])
 
@@ -134,7 +134,7 @@ export default function reviewView(state: AppState) {
         onclick: actions.removeAllSavedCharacters,
     }, [text('clear')])
 
-    const buttons = h('div', {class: 'row justify-content-end'}, [
+    const buttons = h('div', {class: 'row justify-content-center'}, [
       h('div', {class: 'col-md-6'}, [
           sortCharactersButton,
           sortByJyutpingButton,

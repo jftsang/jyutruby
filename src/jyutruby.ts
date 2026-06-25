@@ -98,9 +98,9 @@ function view(state: AppState) {
             throw new Error('Unknown app mode');
     }
 
-    return h('div', {}, [
+    return h('div', {style: {display: 'flex', flexDirection: 'column', minHeight: '100vh'}}, [
       modeChooser(state),
-      body,
+      h('div', {style: {flex: '1'}}, [body]),
       footer(state),
     ]);
 }
