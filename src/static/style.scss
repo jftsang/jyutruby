@@ -138,3 +138,17 @@ div #reader {
   z-index: 1000;
   background-color: beige;
 }
+
+footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: beige;
+  padding-top: 20px;
+  z-index: 999;
+}
+
+.bottombar {
+  padding-bottom: 10px;
+}

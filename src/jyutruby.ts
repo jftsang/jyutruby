@@ -16,6 +16,13 @@ const actions = {
     setAppMode: (state: AppState, newMode: AppMode): AppState => {
         return {...state, appMode: newMode};
     },
+  resetAppState(state) {
+    if (!confirm('Are you sure you want to reset the app?')) {
+      return state;
+    }
+
+    return defaultInitialState;
+  }
 };
 
 for (const [key, value] of Object.entries(actions)) {
@@ -49,6 +56,28 @@ function modeChooser(state: AppState) {
     }, tabs)
 }
 
+function footer(state: AppState) {
+    const links = [
+      text('Jyutruby'),
+      h('span', {class: 'mx-2'}, []),
+      h('a', {href: 'https://github.com/jftsang/jyutruby'},
+        [text('github')]
+      ),
+      h('span', {class: 'mx-2'}, []),
+      h('a', {href: '#', onclick: actions.resetAppState, class: 'text-danger'}, [
+        text('reset everything')
+      ]),
+      h('span', {class: 'mx-2'}, []),
+      h('a', {href: '#'}, [text('back to top')]),
+    ];
+
+  return h(
+      'footer', {}, [
+        h('div', {id: 'bottombar', class: 'bottombar text-center'}, links)
+      ]
+    );
+}
+
 
 function view(state: AppState) {
     let body;
@@ -69,7 +98,11 @@ function view(state: AppState) {
             throw new Error('Unknown app mode');
     }
 
-    return h('div', {}, [modeChooser(state), body]);
+    return h('div', {}, [
+      modeChooser(state),
+      body,
+      footer(state),
+    ]);
 }
 
 
