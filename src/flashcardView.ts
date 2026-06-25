@@ -7,11 +7,17 @@ export interface FlashcardState {
     flipped: boolean;
 }
 
-function getRandomItem<S>(set: Set<S>): S | null {
+function getRandomItem<S>(set: Set<S>, exclude: S | null = null): S | null {
     if (set.size === 0) {
         return null;
     }
-    let items = Array.from(set);
+    if (set.size === 1 && exclude !== null && set.has(exclude)) {
+        return exclude;
+    }
+    let items = Array.from(set).filter(item => item !== exclude);
+    if (items.length === 0) {
+        return null;
+    }
     return items[Math.floor(Math.random() * items.length)];
 }
 
@@ -22,8 +28,20 @@ export const actions = {
     },
     next: (state: AppState): AppState => {
         state.flashcardState.flipped = false;
-        state.flashcardState.currentCharacter = getRandomItem(state.savedCharacters);
+        const nextChar = getRandomItem(
+          state.savedCharacters, state.flashcardState.currentCharacter
+        );
+        if (nextChar !== null) {
+          state.flashcardState.currentCharacter = nextChar;
+        }
         return {...state}
+    },
+    drop: (state: AppState): AppState => {
+      const cur = state.flashcardState.currentCharacter;
+      if (cur && state.savedCharacters.has(cur))
+        state.savedCharacters.delete(cur);
+
+      return actions.next(state);
     },
 }
 
@@ -32,6 +50,12 @@ export default function flashcardView(state: AppState) {
 
     if (fsstate.currentCharacter === null)
         fsstate.currentCharacter = getRandomItem(state.savedCharacters);
+
+    if (state.savedCharacters.size === 0) {
+        return h('div', {class: 'text-center mt-5'}, [
+            text('No saved characters. Go to the reading mode and click on characters to save them.')
+        ]);
+    }
 
     const frontSide = h('div', {
         id: 'flashcardFront',
@@ -78,9 +102,15 @@ export default function flashcardView(state: AppState) {
             onclick: actions.next
         }, [text('next')]),
     )
+    buttons.push(
+        h('button', {
+            class: 'btn btn-warning w-25 mx-auto',
+            onclick: actions.drop
+        }, [text('drop')]),
+    )
     const buttonsContainer = h('div', {
         id: 'opts',
-        class: 'opts row justify-content-center w-100 mx-auto my-4'
+        class: 'opts row justify-content-center w-50 mx-auto my-4'
     }, buttons)
 
     return h('div',

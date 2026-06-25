@@ -44,7 +44,11 @@ for (const [key, value] of Object.entries(actions)) {
 export default function reviewView(state: AppState) {
 
     if (state.savedCharacters.size === 0) {
-        return h('div', {class: 'container'}, [text('No saved characters. Click on some characters to save them.')]);
+        // return h('div', {class: 'container'}, [text('No saved characters. Click on some characters to save them.')]);
+
+      return h('div', {class: 'text-center mt-5'}, [
+        text('No saved characters. Go to the reading mode and click on characters to save them.')
+      ]);
     }
 
     const rows = [];

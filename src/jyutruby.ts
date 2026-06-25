@@ -125,8 +125,9 @@ app({
           }
 
           if (state.appMode === AppMode.flashcard) {
-            if (e.key === 'f' || e.key === 'F') dispatch(flashcardActions.flip);
-            if (e.key === 'n' || e.key === 'N') dispatch(flashcardActions.next);
+            if (e.key === 'f') dispatch(flashcardActions.flip);
+            if (e.key === 'n') dispatch(flashcardActions.next);
+            if (e.key === 'N') dispatch(flashcardActions.drop);
           }
         };
         window.addEventListener('keydown', handleKeydown);
