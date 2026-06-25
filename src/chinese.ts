@@ -1,8 +1,8 @@
-import {cantojpmin_data} from "./CantoJpMin/scripts/modules_format/cantojpmin_data.js";
+// jyutping lookup
+const {CantoJpMin, cantojpmin_data} = (window as any);
 
 export function toJyutping(char: string): string | null {
     if (Object.hasOwn(cantojpmin_data, char)) {
-        // @ts-ignore
         return CantoJpMin.toJyutping(char);
     } else {
         return null;
@@ -10,8 +10,7 @@ export function toJyutping(char: string): string | null {
 }
 
 export function toJyutpingArray(char: string): string[] | null {
-    if (Object.hasOwn(cantojpmin_data, char)) {
-        // @ts-ignore
+  if (Object.hasOwn(cantojpmin_data, char)) {
         return CantoJpMin.toJyutpingArray(char)[0].jyutpings;
     } else {
         return null;
