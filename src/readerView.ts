@@ -1,6 +1,6 @@
 import {h, text} from "hyperapp";
-import {toJyutping} from "./chinese.js";
-import {AppState, DisplayMode, toggle} from "./state.js";
+import {toJyutping, convertScript} from "./chinese.js";
+import {AppState, DisplayMode, ScriptConversionMode, toggle} from "./state.js";
 import {stateSaver} from "./storage.js";
 
 const actions = {
@@ -18,6 +18,10 @@ const actions = {
     },
     setDisplayMode: (state: AppState, newMode: DisplayMode): AppState => {
         return {...state, displayMode: newMode};
+    },
+    setScriptConversionMode: (state: AppState, newMode: ScriptConversionMode): AppState => {
+      const converted = convertScript(state.inputText, newMode);
+      return {...state, scriptConversion: newMode, convertedText: converted};
     },
     togglePreservingLines: (state: AppState): AppState => {
         return {...state, preservingLines: !state.preservingLines};
@@ -84,6 +88,35 @@ export default function readerView(state: AppState) {
         displayModeChooserComponents
     );
 
+    const scriptConversionChoices: [string, ScriptConversionMode, string][] = [
+        ['noconvertRadio', ScriptConversionMode.noconvert, 'No conversion'],
+        ['traditionalRadio', ScriptConversionMode.traditional, 'Traditional'],
+        ['simplifiedRadio', ScriptConversionMode.simplified, 'Simplified'],
+    ]
+    const scriptConversionChooserComponents = [];
+    for (let choice of scriptConversionChoices) {
+        const [id, mode, labelText] = choice;
+        const radio = h('input', {
+            id: id,
+            name: 'scriptConversion',
+            type: 'radio',
+            class: 'form-radio',
+            checked: state.scriptConversion === mode,
+            onclick: [actions.setScriptConversionMode, mode]
+        }, []);
+        const label = h('label', {
+            'class': 'form-radio-label',
+            'for': id
+        }, [text(labelText)]);
+        const div = h('div', {'class': 'form-check form-check-inline'}, [radio, label]);
+        scriptConversionChooserComponents.push(div);
+    }
+
+    const scriptConversionChooser = h('div',
+        {},
+        scriptConversionChooserComponents
+    );
+
     const preserveLinesInput = h('input', {
         id: 'preserveLinesToggle',
         type: 'checkbox',
@@ -95,20 +128,22 @@ export default function readerView(state: AppState) {
     const preserveLinesLabel = h('label', {
         'class': 'form-check-label',
         'for': 'preserveLinesToggle'
-    }, [text('Preserve lines')]);
+    }, [text('Preserve lines (for poetry)')]);
     const preserveLines = h('div',
         {class: 'form-check form-check-inline form-switch ms-auto'},
         [preserveLinesInput, preserveLinesLabel]
     );
 
+    const spacer = h('div', {class: 'me-3'}, []);
+
     const topBar =  h(
-        'div', {id: 'topBar', class: 'topbar'}, [displayModeChooser, preserveLines]
+        'div', {id: 'topBar', class: 'topbar'}, [displayModeChooser, spacer, scriptConversionChooser, preserveLines]
     );
     const readerDisplay = h('article', {}, [
         h('div', {
             id: 'reader',
             class: 'chinese mx-0 mx-md-auto col-md-7'
-        }, Array(...state.inputText).map(char => displayCharacter(char, state)))
+        }, Array(...state.convertedText).map(char => displayCharacter(char, state)))
     ]);
     return h('div', {}, [topBar, readerDisplay]);
 }

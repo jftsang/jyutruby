@@ -6,7 +6,7 @@
     "build": "npx parcel build src/index.html src/sw.ts && cp -R public/* dist",
     "dev": "npx parcel watch src/index.html src/sw.ts && cp -R public/* dist",
     "devserver": "npx parcel serve src/index.html src/sw.ts && cp -R public/* dist",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist .parcel-cache"
   },
   "targets": {
     "default": {
@@ -22,6 +22,7 @@
     "bootstrap": "^5.3.8",
     "bootstrap-icons": "^1.13.1",
     "hyperapp": "^2.0.0",
+    "opencc-js": "^1.3.1",
     "sass": "^1.101.0"
   },
   "devDependencies": {

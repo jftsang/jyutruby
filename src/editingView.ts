@@ -2,12 +2,17 @@ import {AppState} from "./state.js";
 // @ts-ignore
 import {h, text} from "hyperapp";
 import {stateSaver} from "./storage.js";
+import {convertScript} from "./chinese.js";
 
 const actions = {
-    setInputText: (state: AppState, event: InputEvent): AppState => {
-        // @ts-ignore
-        return {...state, inputText: event.target.value};
-    },
+  setInputText: (state: AppState, event: InputEvent): AppState => {
+    const converted = convertScript(state.inputText, state.scriptConversion);
+    return {
+      ...state,
+      inputText: (event.target as HTMLTextAreaElement).value,
+      convertedText: converted
+    };
+  },
 }
 
 for (const [key, value] of Object.entries(actions)) {
