@@ -108,7 +108,10 @@ export default function reviewView(state: AppState) {
       h('td', {class: 'text-center'}, [
         h('button', {
           class: 'btn btn-success',
-          onclick: (state: AppState) => actions.addNewSavedCharacter(state, addNewCharInput.node.value)
+          onclick: (state: AppState) =>
+            actions.addNewSavedCharacter(
+              state, (addNewCharInput.node as HTMLInputElement).value
+            )
         }, [text('Add')])
       ])
     ])
