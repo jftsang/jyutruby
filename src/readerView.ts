@@ -21,7 +21,7 @@ const actions = {
     },
     setScriptConversionMode: (state: AppState, newMode: ScriptConversionMode): AppState => {
       const converted = convertScript(state.inputText, newMode);
-      return {...state, scriptConversion: newMode, convertedText: converted};
+      return {...state, scriptConversion: newMode};
     },
     togglePreservingLines: (state: AppState): AppState => {
         return {...state, preservingLines: !state.preservingLines};
@@ -32,24 +32,19 @@ for (const [key, value] of Object.entries(actions)) {
     actions[key] = stateSaver(value);
 }
 
-const displayCharacter = (char: string, state: AppState) => {
+const displayCharacter = (char: string, highlight: boolean, showRuby: boolean, preserveLines: boolean) => {
     if (char === '\n') {
-        if (!state.preservingLines) return;
+        if (!preserveLines) return;
         return h('br', {class: ''}, []);
     }
-    const isVisible = (
-        (
-            state.displayMode == DisplayMode.showingSaved
-            && state.savedCharacters.has(char)
-        ) || (state.displayMode == DisplayMode.showingAll)
-    );
+
     const jyut = toJyutping(char);
     if (!jyut) {
         return text(char);
     }
-    const rt = h('rt', {class: isVisible ? 'visible' : ''}, [text(jyut)])
+    const rt = h('rt', {class: showRuby ? 'visible' : ''}, [text(jyut)])
     const classList = ['clickable'];
-    if (state.savedCharacters.has(char))
+    if (highlight)
         classList.push('highlighted');
     return h('ruby', {
         class: classList,
@@ -143,7 +138,15 @@ export default function readerView(state: AppState) {
         h('div', {
             id: 'reader',
             class: 'chinese mx-0 mx-md-auto col-md-7'
-        }, Array(...state.convertedText).map(char => displayCharacter(char, state)))
+        }, Array(...state.inputText).map(char => {
+          const converted = convertScript(char, state.scriptConversion);
+          const highlighted = state.savedCharacters.has(converted)
+          const showRuby = (
+            state.displayMode == DisplayMode.showingSaved
+            && state.savedCharacters.has(converted)
+          ) || (state.displayMode == DisplayMode.showingAll)
+          return displayCharacter(converted, highlighted, showRuby, state.preservingLines);
+        }))
     ]);
     return h('div', {}, [topBar, readerDisplay]);
 }

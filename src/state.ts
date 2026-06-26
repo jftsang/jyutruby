@@ -20,7 +20,11 @@ export enum ScriptConversionMode {
 
 export interface AppState {
     inputText: string;
-    convertedText: string;
+    /*
+     * Simplified and traditional forms of the same character are stored
+     * separately, so that you can flag the simplified form but not the
+     * traditional form.
+     */
     savedCharacters: Set<string>;
     appMode: AppMode,
     displayMode: DisplayMode,
@@ -38,7 +42,6 @@ export function toggle<T>(set: Set<T>, x: T): void {
 
 export const defaultInitialState: AppState = {
   inputText: defaultText,
-  convertedText: defaultText,
   savedCharacters: new Set(['人',
       '之',
       '初']),

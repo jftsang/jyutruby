@@ -6,11 +6,9 @@ import {convertScript} from "./chinese.js";
 
 const actions = {
   setInputText: (state: AppState, event: InputEvent): AppState => {
-    const converted = convertScript(state.inputText, state.scriptConversion);
     return {
       ...state,
       inputText: (event.target as HTMLTextAreaElement).value,
-      convertedText: converted
     };
   },
 }
