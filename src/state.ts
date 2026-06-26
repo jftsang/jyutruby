@@ -42,9 +42,7 @@ export function toggle<T>(set: Set<T>, x: T): void {
 
 export const defaultInitialState: AppState = {
   inputText: defaultText,
-  savedCharacters: new Set(['人',
-      '之',
-      '初']),
+  savedCharacters: new Set(['繁','體','简','体']),
   appMode: AppMode.reading,
   displayMode: DisplayMode.showingSaved,
   scriptConversion: ScriptConversionMode.traditional,

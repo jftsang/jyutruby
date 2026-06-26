@@ -38,3 +38,8 @@ export function convertScript(text: string, newMode: ScriptConversionMode): stri
       return simplifiedConverter(text);
   }
 }
+
+/* For breaking text down to paragraphs, words and characters. */
+export function breakdown(text: string): string[] {
+  return text.split("\n\n")
+}

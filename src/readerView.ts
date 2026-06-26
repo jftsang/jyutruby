@@ -1,5 +1,5 @@
 import {h, text} from "hyperapp";
-import {toJyutping, convertScript} from "./chinese.js";
+import {toJyutping, convertScript, breakdown} from "./chinese.js";
 import {AppState, DisplayMode, ScriptConversionMode, toggle} from "./state.js";
 import {stateSaver} from "./storage.js";
 
@@ -134,19 +134,23 @@ export default function readerView(state: AppState) {
     const topBar =  h(
         'div', {id: 'readerOptionsBar'}, [displayModeChooser, spacer, scriptConversionChooser, preserveLines]
     );
+    const paragraphs = breakdown(state.inputText);
+    const pTags = paragraphs.map((p) => {
+      const chars = Array.from(p).map(char => {
+        const converted = convertScript(char, state.scriptConversion);
+        const highlighted = state.savedCharacters.has(converted)
+        const showRuby = (
+          state.displayMode == DisplayMode.showingSaved
+          && state.savedCharacters.has(converted)
+        ) || (state.displayMode == DisplayMode.showingAll)
+        return displayCharacter(converted, highlighted, showRuby, state.preservingLines);
+        }
+      )
+      return h('p', {}, chars)
+    })
+
     const readerDisplay = h('article', {}, [
-        h('div', {
-            id: 'reader',
-            class: 'chinese mx-0 mx-md-auto col-md-7'
-        }, Array(...state.inputText).map(char => {
-          const converted = convertScript(char, state.scriptConversion);
-          const highlighted = state.savedCharacters.has(converted)
-          const showRuby = (
-            state.displayMode == DisplayMode.showingSaved
-            && state.savedCharacters.has(converted)
-          ) || (state.displayMode == DisplayMode.showingAll)
-          return displayCharacter(converted, highlighted, showRuby, state.preservingLines);
-        }))
-    ]);
+      h('div', {id: 'reader', class: 'chinese mx-0 mx-md-auto col-md-7'}, pTags)
+    ])
     return h('div', {}, [topBar, readerDisplay]);
 }

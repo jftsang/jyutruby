@@ -2,7 +2,6 @@ import {AppState} from "./state.js";
 // @ts-ignore
 import {h, text} from "hyperapp";
 import {stateSaver} from "./storage.js";
-import {convertScript} from "./chinese.js";
 
 const actions = {
   setInputText: (state: AppState, event: InputEvent): AppState => {
