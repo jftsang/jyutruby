@@ -114,6 +114,15 @@ app({
     [
       (dispatch, props) => {
         const handleKeydown = (e) => {
+          // Don't trigger shortcuts when typing in input/textarea
+          if (
+            e.target instanceof HTMLTextAreaElement ||
+            e.target instanceof HTMLInputElement ||
+            e.target.isContentEditable
+          ) {
+            return; // Do not process the shortcut
+          }
+
           const modeShortcuts: [string, AppMode][] = [
             ['q', AppMode.reading],
             ['w', AppMode.editing],
