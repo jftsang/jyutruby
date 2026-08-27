@@ -3,7 +3,7 @@ import {loadFromStorage, stateSaver} from "./storage.js";
 import editingView from "./editingView.js";
 import readerView from "./readerView.js";
 
-import {app, h, text} from "hyperapp";
+import {app, ElementVNode, h, text} from "hyperapp";
 import reviewView from "./reviewView.js";
 import flashcardView, {actions as flashcardActions} from "./flashcardView.js";
 
@@ -12,11 +12,14 @@ const initialState: AppState = {
     ...(loadFromStorage() ?? {})
 };
 
-const actions = {
-    setAppMode: (state: AppState, newMode: AppMode): AppState => {
-        return {...state, appMode: newMode};
-    },
-  resetAppState(state) {
+type Action = (state: AppState, ...args: any[]) => AppState;
+
+
+const actions: Record<string, Action> = {
+  setAppMode: (state: AppState, newMode: AppMode): AppState => {
+    return {...state, appMode: newMode};
+  },
+  resetAppState: (state: AppState): AppState => {
     if (!confirm('Are you sure you want to reset the app?')) {
       return state;
     }
@@ -28,7 +31,6 @@ const actions = {
 for (const [key, value] of Object.entries(actions)) {
     actions[key] = stateSaver(value);
 }
-
 
 function modeChooser(state: AppState) {
     const options: [AppMode, string][] = [
@@ -57,7 +59,7 @@ function modeChooser(state: AppState) {
 }
 
 function footer(state: AppState) {
-    const links = [
+    const links: ElementVNode<any>[] = [
       text('Jyutruby'),
       h('span', {class: 'mx-2'}, []),
       h('a', {href: 'https://github.com/jftsang/jyutruby'},
@@ -105,9 +107,12 @@ function view(state: AppState) {
     ]);
 }
 
+fetch("/api/hello")
+  .then(r => r.json())
+  .then(console.log);
 
 app({
-  node: document.getElementById('app'),
+  node: document.getElementById('app') as HTMLElement,
   view: view,
   init: initialState,
   subscriptions: (state: AppState) => [

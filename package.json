@@ -5,7 +5,7 @@
   "scripts": {
     "build": "npx parcel build src/index.html src/sw.ts && cp -R public/* dist",
     "dev": "npx parcel watch src/index.html src/sw.ts && cp -R public/* dist",
-    "devserver": "npx parcel serve src/index.html src/sw.ts && cp -R public/* dist",
+    "devserver": "npx parcel serve src/index.html src/sw.ts --port 1234 && cp -R public/* dist",
     "clean": "rm -rf dist .parcel-cache"
   },
   "targets": {
@@ -29,6 +29,7 @@
     "@parcel/packager-raw-url": "^2.16.4",
     "@parcel/transformer-sass": "^2.16.4",
     "@parcel/transformer-webmanifest": "^2.16.4",
+    "http-proxy-middleware": "^4.2.0",
     "parcel": "^2.16.4",
     "parcel-namer-rewrite": "^2.10.3-rc.5"
   }
