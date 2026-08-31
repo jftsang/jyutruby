@@ -3,7 +3,7 @@ import {loadFromStorage, stateSaver} from "./storage.js";
 import editingView from "./editingView.js";
 import readerView from "./readerView.js";
 
-import {app, ElementVNode, h, text} from "hyperapp";
+import {app, h, text, VNode} from "hyperapp";
 import reviewView from "./reviewView.js";
 import flashcardView, {actions as flashcardActions} from "./flashcardView.js";
 
@@ -59,7 +59,7 @@ function modeChooser(state: AppState) {
 }
 
 function footer(state: AppState) {
-    const links: ElementVNode<any>[] = [
+    const links: VNode<any>[] = [
       text('Jyutruby'),
       h('span', {class: 'mx-2'}, []),
       h('a', {href: 'https://github.com/jftsang/jyutruby'},
