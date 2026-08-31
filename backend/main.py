@@ -6,13 +6,11 @@ from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 
 from backend.auth import router as auth_router
-from backend.db import init_db
 from backend.pages import LOGIN_PAGE, SIGNUP_PAGE
 
 
 @asynccontextmanager
 async def lifespan(app: fastapi.FastAPI):
-    init_db()
     yield
 
 

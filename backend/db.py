@@ -42,8 +42,8 @@ class AuthMethod(Base):
     user: Mapped[User] = relationship(back_populates="auth_methods")
 
 
-def init_db() -> None:
-    Base.metadata.create_all(bind=engine)
+# Schema is managed with Alembic (see alembic/ and alembic.ini).
+# Run `alembic upgrade head` to apply migrations.
 
 
 def get_db() -> Generator[SessionLocal, None, None]:
