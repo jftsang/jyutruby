@@ -3,6 +3,18 @@
 {% block title %}Log in{% endblock %}
 
 {% block content %}
+  {% if current_user %}
+  <h1>Already logged in</h1>
+  <p>You are logged in as {{ current_user.display_name }}.</p>
+  <p><a href="/">Go to home</a></p>
+  <button id="logout">Log out</button>
+  <script>
+    document.getElementById('logout').addEventListener('click', async () => {
+      await fetch('/api/auth/logout', { method: 'POST' });
+      window.location.href = '/';
+    });
+  </script>
+  {% else %}
   <h1>Log in</h1>
   <form id="login">
     <label>Username <input type="text" id="username" autocomplete="username" required></label>
@@ -20,7 +32,8 @@
         body: JSON.stringify({ username: document.getElementById('username').value.trim() })
       });
       if (!res.ok) throw new Error((await res.json()).detail || 'failed');
-      return res.json();
+      const data = await res.json();
+      return { challenge_id: data.challenge_id, options: JSON.parse(data.options) };
     }
 
     function toPublicKeyCredentialRequestOptions(o) {
@@ -54,6 +67,7 @@
       try {
         const { challenge_id, options } = await getOptions();
         const cred = await navigator.credentials.get({ publicKey: toPublicKeyCredentialRequestOptions(options) });
+        if (!cred) throw new Error('Passkey authentication was cancelled');
         const res = await fetch('/api/auth/webauthn/login/verify', {
           method: 'POST', headers: {'Content-Type': 'application/json'},
           body: JSON.stringify({ challenge_id, response: toAuthenticationCredential(cred) })
@@ -66,4 +80,5 @@
       }
     });
   </script>
+  {% endif %}
 {% endblock %}

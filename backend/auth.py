@@ -141,10 +141,9 @@ def webauthn_register_verify(
     db.commit()
     db.refresh(user)
 
-    response = fastapi.Response()
+    response = fastapi.responses.JSONResponse(content={"user_id": user.id}, status_code=201)
     _set_session(response, user.id)
-    response.status_code = 201
-    return {"user_id": user.id}
+    return response
 
 
 @router.post("/api/auth/webauthn/login/options")
@@ -228,9 +227,9 @@ def webauthn_login_verify(
     except Exception as exc:  # noqa: BLE001
         raise HTTPException(status_code=400, detail=f"Login failed: {exc}") from exc
 
-    response = fastapi.Response()
+    response = fastapi.responses.JSONResponse(content={"user_id": user.id})
     _set_session(response, user.id)
-    return {"user_id": user.id}
+    return response
 
 
 @router.get("/api/auth/me")
