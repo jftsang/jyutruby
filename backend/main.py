@@ -2,11 +2,13 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 
 import fastapi
-from fastapi.responses import HTMLResponse
+from fastapi import Request
 from fastapi.staticfiles import StaticFiles
+from starlette.templating import Jinja2Templates
 
 from backend.auth import router as auth_router
-from backend.pages import LOGIN_PAGE, SIGNUP_PAGE
+
+templates = Jinja2Templates(directory=Path(__file__).parent / "templates")
 
 
 @asynccontextmanager
@@ -19,14 +21,14 @@ app = fastapi.FastAPI(lifespan=lifespan)
 app.include_router(auth_router)
 
 
-@app.get("/signup", response_class=HTMLResponse)
-def signup_page():
-    return SIGNUP_PAGE
+@app.get("/signup")
+def signup_page(request: Request):
+    return templates.TemplateResponse(request, "signup.html")
 
 
-@app.get("/login", response_class=HTMLResponse)
-def login_page():
-    return LOGIN_PAGE
+@app.get("/login")
+def login_page(request: Request):
+    return templates.TemplateResponse(request, "login.html")
 
 
 @app.get("/api/hello")
@@ -35,5 +37,7 @@ def hello():
 
 
 app.mount(
-    "/", StaticFiles(directory=Path(__file__).parent / "../dist", html=True), name="static"
+    "/",
+    StaticFiles(directory=Path(__file__).parent / "../dist", html=True),
+    name="static",
 )

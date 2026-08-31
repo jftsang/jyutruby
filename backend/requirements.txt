@@ -2,5 +2,6 @@ fastapi
 uvicorn[standard]
 sqlalchemy
 alembic
+jinja2
 webauthn
 itsdangerous
