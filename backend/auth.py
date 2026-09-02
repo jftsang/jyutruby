@@ -61,7 +61,7 @@ def _get_current_user_id(request: fastapi.Request) -> int | None:
         return None
     try:
         return _session_serializer.loads(token, max_age=60 * 60 * 24 * 30)
-    except (BadSignature, SignatureExpired, TypeError):
+    except BadSignature, SignatureExpired, TypeError:
         return None
 
 
@@ -108,7 +108,7 @@ def webauthn_register_options(
 @router.post("/api/auth/webauthn/register/verify")
 def webauthn_register_verify(
     body: VerifyRegistrationRequest, db: Session = Depends(get_db)
-) -> dict:
+) -> fastapi.responses.JSONResponse:
     pending = _PENDING.pop(body.challenge_id, None)
     if not pending or pending["step"] != "register":
         raise HTTPException(status_code=400, detail="Invalid challenge")
@@ -122,7 +122,9 @@ def webauthn_register_verify(
             require_user_verification=False,
         )
     except Exception as exc:  # noqa: BLE001 - surface any webauthn error
-        raise HTTPException(status_code=400, detail=f"Registration failed: {exc}") from exc
+        raise HTTPException(
+            status_code=400, detail=f"Registration failed: {exc}"
+        ) from exc
 
     user = User(display_name=pending["username"])
     db.add(user)
@@ -141,7 +143,9 @@ def webauthn_register_verify(
     db.commit()
     db.refresh(user)
 
-    response = fastapi.responses.JSONResponse(content={"user_id": user.id}, status_code=201)
+    response = fastapi.responses.JSONResponse(
+        content={"user_id": user.id}, status_code=201
+    )
     _set_session(response, user.id)
     return response
 
@@ -164,7 +168,9 @@ def webauthn_login_options(
         .all()
     )
     if not methods:
-        raise HTTPException(status_code=404, detail="No WebAuthn credential for this user")
+        raise HTTPException(
+            status_code=404, detail="No WebAuthn credential for this user"
+        )
 
     from webauthn.helpers.structs import PublicKeyCredentialDescriptor
 
@@ -179,14 +185,18 @@ def webauthn_login_options(
         ],
         user_verification=UserVerificationRequirement.PREFERRED,
     )
-    _PENDING[challenge_id] = {"step": "login", "challenge": options.challenge, "user": user}
+    _PENDING[challenge_id] = {
+        "step": "login",
+        "challenge": options.challenge,
+        "user": user,
+    }
     return {"challenge_id": challenge_id, "options": options_to_json(options)}
 
 
 @router.post("/api/auth/webauthn/login/verify")
 def webauthn_login_verify(
     body: VerifyLoginRequest, db: Session = Depends(get_db)
-) -> dict:
+) -> fastapi.responses.JSONResponse:
     pending = _PENDING.pop(body.challenge_id, None)
     if not pending or pending["step"] != "login":
         raise HTTPException(status_code=400, detail="Invalid challenge")
@@ -199,8 +209,10 @@ def webauthn_login_verify(
     )
 
     try:
-        expected_id = base64url_to_bytes(body.response["id"]) if "id" in body.response else None
-    except (TypeError, ValueError):
+        expected_id = (
+            base64url_to_bytes(body.response["id"]) if "id" in body.response else None
+        )
+    except TypeError, ValueError:
         expected_id = None
 
     match = None

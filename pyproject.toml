@@ -11,3 +11,9 @@ dependencies = [
     "uvicorn>=0.31.0",
     "webauthn>=3.0.0",
 ]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.16.5",
+    "ty>=0.0.77",
+]

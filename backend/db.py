@@ -1,7 +1,13 @@
 from collections.abc import Generator
 
 from sqlalchemy import ForeignKey, LargeBinary, String, Text, create_engine
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship, sessionmaker
+from sqlalchemy.orm import (
+    DeclarativeBase,
+    Mapped,
+    mapped_column,
+    relationship,
+    sessionmaker,
+)
 
 from backend.config import DATABASE_URL
 
