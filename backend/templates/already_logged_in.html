@@ -1,0 +1,10 @@
+<h1>Already logged in</h1>
+<p>You are logged in as {{ current_user.display_name }}.</p>
+<p><a href="/">Go to home</a></p>
+<button id="logout">Log out</button>
+<script>
+  document.getElementById('logout').addEventListener('click', async () => {
+    await fetch('/api/auth/logout', { method: 'POST' });
+    window.location.href = '/';
+  });
+</script>

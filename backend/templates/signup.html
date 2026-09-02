@@ -3,6 +3,9 @@
 {% block title %}Sign up{% endblock %}
 
 {% block content %}
+  {% if current_user %}
+  {% include "already_logged_in.html" %}
+  {% else %}
   <h1>Sign up</h1>
   <form id="signup">
     <label>Username <input type="text" id="username" autocomplete="username" required></label>
@@ -73,4 +76,5 @@
       }
     });
   </script>
+  {% endif %}
 {% endblock %}

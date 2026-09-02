@@ -23,7 +23,14 @@ app.include_router(auth_router)
 
 @app.get("/signup")
 def signup_page(request: Request):
-    return templates.TemplateResponse(request, "signup.html")
+    from backend.db import get_db, User
+
+    db = next(get_db())
+    user_id = _get_current_user_id(request)
+    current_user = db.get(User, user_id) if user_id else None
+    return templates.TemplateResponse(
+        request, "signup.html", {"current_user": current_user}
+    )
 
 
 @app.get("/login")
