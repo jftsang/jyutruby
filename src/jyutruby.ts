@@ -3,7 +3,7 @@ import {loadFromStorage, stateSaver} from "./storage.js";
 import editingView from "./editingView.js";
 import readerView from "./readerView.js";
 
-import {app, h, text, VNode} from "hyperapp";
+import {app, ElementVNode, h, text, VNode} from "hyperapp";
 import reviewView from "./reviewView.js";
 import flashcardView, {actions as flashcardActions} from "./flashcardView.js";
 
@@ -56,7 +56,7 @@ function fetchAuthUser(): void {
     .catch(() => dispatchRef(actions.setAuthUnavailable));
 }
 
-function authMenu(state: AppState) {
+function authMenu(state: AppState): VNode<AppState>[] {
   if (!state.authAvailable) {
     return [];
   }
@@ -127,8 +127,8 @@ function footer(state: AppState) {
 }
 
 
-function view(state: AppState) {
-    let body;
+function view(state: AppState): ElementVNode<AppState> {
+    let body: ElementVNode<AppState>;
     switch (state.appMode) {
         case AppMode.reading:
             body = readerView(state);
@@ -163,12 +163,12 @@ app({
     [
       (dispatch, props) => {
         dispatchRef = dispatch;
-        const handleKeydown = (e) => {
+        const handleKeydown = (e: KeyboardEvent) => {
           // Don't trigger shortcuts when typing in input/textarea
           if (
             e.target instanceof HTMLTextAreaElement ||
             e.target instanceof HTMLInputElement ||
-            e.target.isContentEditable
+            (e.target as any).isContentEditable
           ) {
             return; // Do not process the shortcut
           }

@@ -1,9 +1,9 @@
-import {h, text} from "hyperapp";
+import {ElementVNode, h, text} from "hyperapp";
 import {toJyutping, convertScript, breakdown} from "./chinese.js";
 import {AppState, DisplayMode, ScriptConversionMode, toggle} from "./state.js";
 import {stateSaver} from "./storage.js";
 
-const actions = {
+const actions: Record<string, Action> = {
     handleCharacterClick: (state: AppState, event: MouseEvent, char: string): AppState => {
         event.preventDefault();
 
@@ -53,7 +53,7 @@ const displayCharacter = (char: string, highlight: boolean, showRuby: boolean, p
     }, [rt, text(char)]);
 };
 
-export default function readerView(state: AppState) {
+export default function readerView(state: AppState): ElementVNode<AppState> {
     const modeChoices: [string, DisplayMode, string][] = [
         ['showingAllRadio', DisplayMode.showingAll, 'Show all'],
         ['showingSavedRadio', DisplayMode.showingSaved, 'Show saved'],

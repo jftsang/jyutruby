@@ -1,4 +1,4 @@
-import {h, text} from "hyperapp";
+import {ElementVNode, h, text} from "hyperapp";
 import {AppState} from "./state.js";
 import {mdbgUrl, toJyutping} from "./chinese.js";
 
@@ -45,11 +45,11 @@ export const actions = {
     },
 }
 
-export default function flashcardView(state: AppState) {
+export default function flashcardView(state: AppState): ElementVNode<AppState> {
     const fsstate = state.flashcardState;
 
     if (fsstate.currentCharacter === null)
-        fsstate.currentCharacter = getRandomItem(state.savedCharacters);
+        fsstate.currentCharacter = getRandomItem(state.savedCharacters) as string;
 
     if (state.savedCharacters.size === 0) {
         return h('div', {class: 'text-center mt-5'}, [
@@ -57,12 +57,12 @@ export default function flashcardView(state: AppState) {
         ]);
     }
 
-    const frontSide = h('div', {
+    const frontSide: ElementVNode<AppState> = h('div', {
         id: 'flashcardFront',
         class: 'flashcard chinese text-center flashcard-face flashcard-front',
         key: fsstate.currentCharacter + '-front'
     }, text(fsstate.currentCharacter))
-    const backSide = h('div', {
+    const backSide: ElementVNode<AppState> = h('div', {
         id: 'flashcardBack',
         class: 'flashcard text-center flashcard-face flashcard-back',
         key: fsstate.currentCharacter + '-back'
@@ -80,7 +80,7 @@ export default function flashcardView(state: AppState) {
         }, [text('definition')])
     ])
 
-    const flashcard = h('div', {
+    const flashcard: ElementVNode<AppState> = h('div', {
         id: 'flashcard',
         class: [
             'flashcard',

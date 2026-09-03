@@ -1,4 +1,4 @@
-import {h, text} from "hyperapp";
+import {ElementVNode, h, text} from "hyperapp";
 import {mdbgUrl, toJyutping, toJyutpingArray} from "./chinese.js";
 import {AppState} from "./state.js";
 import {stateSaver} from "./storage.js";
@@ -19,7 +19,7 @@ const actions = {
     sortByJyutping(state: AppState): AppState {
         const sortedCharacters = Array.from(state.savedCharacters);
         sortedCharacters.sort(
-            (a, b) => toJyutping(a).localeCompare(toJyutping(b))
+            (a, b) => (toJyutping(a) as string).localeCompare(toJyutping(b) as string)
         );
         return {...state, savedCharacters: new Set(sortedCharacters)};
     },
@@ -41,7 +41,7 @@ for (const [key, value] of Object.entries(actions)) {
     actions[key] = stateSaver(value);
 }
 
-export default function reviewView(state: AppState) {
+export default function reviewView(state: AppState): ElementVNode<AppState> {
 
     if (state.savedCharacters.size === 0) {
         // return h('div', {class: 'container'}, [text('No saved characters. Click on some characters to save them.')]);
@@ -67,10 +67,10 @@ export default function reviewView(state: AppState) {
     for (const char of state.savedCharacters) {
         const mainReading = toJyutping(char) ?? '';
 
-        const allReadings: string[] = toJyutpingArray(char);
+        const allReadings: string[] = toJyutpingArray(char) as string[];
         const alternativeReadings = allReadings !== null && allReadings.length > 1 ? allReadings.slice(1).toString().replaceAll(',', ', ') : '';
 
-        const row = h('tr', {class: ''}, [
+        const row: ElementVNode<AppState> = h('tr', {class: ''}, [
           h('td', {class: 'text-center chinese revisionChinese'}, [text(char)]),
           h('td', ctr, [text(mainReading)]),
           h('td', ctr, [text(alternativeReadings)]),
@@ -98,7 +98,7 @@ export default function reviewView(state: AppState) {
         class: 'form-control text-center chinese revisionChinese bg-white',
         maxlength: '1',
     })
-    const addCharRow = h('tr', {}, [
+    const addCharRow: ElementVNode<AppState> = h('tr', {}, [
       h('td', {class: 'text-center chinese revisionChinese'}, [
         addNewCharInput
       ]),
