@@ -1,4 +1,4 @@
-import {AppMode, AppState, defaultInitialState} from "./state.js";
+import {AppMode, AppState, User, defaultInitialState} from "./state.js";
 import {loadFromStorage, stateSaver} from "./storage.js";
 import editingView from "./editingView.js";
 import readerView from "./readerView.js";
@@ -25,11 +25,52 @@ const actions: Record<string, Action> = {
     }
 
     return defaultInitialState;
+  },
+  setUser: (state: AppState, user: User | null): AppState => {
+    return {...state, user, authAvailable: true};
+  },
+  setAuthUnavailable: (state: AppState): AppState => {
+    return {...state, user: null, authAvailable: false};
+  },
+  logout: (state: AppState): AppState => {
+    fetch("/api/auth/logout", {method: "POST"})
+      .then(() => dispatchRef(actions.setUser, null));
+    return {...state, user: null};
   }
 };
 
 for (const [key, value] of Object.entries(actions)) {
     actions[key] = stateSaver(value);
+}
+
+let dispatchRef: (action: Action, ...args: any[]) => void = () => {};
+
+function fetchAuthUser(): void {
+  fetch("/api/auth/me", {credentials: "same-origin"})
+    .then(r => {
+      if (r.ok) return r.json();
+      if (r.status === 401) return null;
+      throw new Error('Auth API error');
+    })
+    .then((data: User | null) => dispatchRef(actions.setUser, data))
+    .catch(() => dispatchRef(actions.setAuthUnavailable));
+}
+
+function authMenu(state: AppState) {
+  if (!state.authAvailable) {
+    return [];
+  }
+  if (state.user) {
+    return [
+      text(`hello, ${state.user.display_name}`),
+      h('span', {class: 'mx-2'}, []),
+      h('a', {href: '#', onclick: actions.logout}, [text('log out')]),
+    ];
+  }
+  return [
+    h('a', {class: 'mx-1', href: '/login'}, [text('login')]),
+    h('a', {class: 'mx-1', href: '/signup'}, [text('signup')]),
+  ];
 }
 
 function modeChooser(state: AppState) {
@@ -52,10 +93,15 @@ function modeChooser(state: AppState) {
         )
         tabs.push(tab)
     }
+    const auth = state.authAvailable
+      ? h('div', {id: 'authMenu', class: 'ms-auto'}, authMenu(state))
+      : null;
+    const children = auth ? [...tabs, auth] : tabs;
+
     return h('nav', {
         id: 'modeChooser',
         class: 'nav nav-tabs justify-content-center'
-    }, tabs)
+    }, children)
 }
 
 function footer(state: AppState) {
@@ -107,9 +153,7 @@ function view(state: AppState) {
     ]);
 }
 
-fetch("/api/hello")
-  .then(r => r.json())
-  .then(console.log);
+fetchAuthUser();
 
 app({
   node: document.getElementById('app') as HTMLElement,
@@ -118,6 +162,7 @@ app({
   subscriptions: (state: AppState) => [
     [
       (dispatch, props) => {
+        dispatchRef = dispatch;
         const handleKeydown = (e) => {
           // Don't trigger shortcuts when typing in input/textarea
           if (
@@ -145,7 +190,20 @@ app({
           }
         };
         window.addEventListener('keydown', handleKeydown);
-        return () => window.removeEventListener('keydown', handleKeydown);
+
+        const handleVisibility = () => {
+          if (document.visibilityState === 'visible') {
+            fetchAuthUser();
+          }
+        };
+        document.addEventListener('visibilitychange', handleVisibility);
+        window.addEventListener('focus', handleVisibility);
+
+        return () => {
+          window.removeEventListener('keydown', handleKeydown);
+          document.removeEventListener('visibilitychange', handleVisibility);
+          window.removeEventListener('focus', handleVisibility);
+        };
       },
       {}
     ]

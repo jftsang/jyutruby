@@ -49,6 +49,21 @@ body {
   }
 }
 
+#authMenu {
+  align-self: center;
+  padding-right: 1rem;
+  color: silver;
+
+  a {
+    color: silver;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
 
 div #reader {
   font-size: x-large;

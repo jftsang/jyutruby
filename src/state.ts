@@ -18,7 +18,14 @@ export enum ScriptConversionMode {
   noconvert, traditional, simplified,
 }
 
+export interface User {
+    user_id: number;
+    display_name: string;
+}
+
 export interface AppState {
+    user: User | null;
+    authAvailable: boolean;
     inputText: string;
     /*
      * Simplified and traditional forms of the same character are stored
@@ -41,11 +48,13 @@ export function toggle<T>(set: Set<T>, x: T): void {
 }
 
 export const defaultInitialState: AppState = {
+  user: null,
+  authAvailable: false,
   inputText: defaultText,
   savedCharacters: new Set(['繁','體','简','体']),
   appMode: AppMode.reading,
   displayMode: DisplayMode.showingSaved,
   scriptConversion: ScriptConversionMode.traditional,
   preservingLines: true,
-  flashcardState: {currentCharacter: null, flipped: false},
+  flashcardState: {currentCharacter: (null as unknown as string), flipped: false},
 };
