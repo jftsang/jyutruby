@@ -3,10 +3,19 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "build": "npx parcel build src/index.html src/sw.ts && cp -R public/* dist",
-    "dev": "npx parcel watch src/index.html src/sw.ts && cp -R public/* dist",
-    "devserver": "npx parcel serve src/index.html src/sw.ts --port 1234 && cp -R public/* dist",
-    "clean": "rm -rf dist .parcel-cache"
+    "build": "npx parcel build src/index.html src/sw.ts",
+    "dev": "npx parcel watch src/index.html src/sw.ts",
+    "devserver": "npx parcel serve src/index.html src/sw.ts --port 1234",
+    "clean": "node -e \"fs.rmSync('dist',{recursive:true,force:true});fs.rmSync('.parcel-cache',{recursive:true,force:true})\""
+  },
+  "parcel-namer-rewrite": {
+    "chain": "@parcel/namer-default",
+    "hashing": "always",
+    "rules": {
+      "favicon\\.(.*)\\.ico": "favicon.ico",
+      "icon-192\\.(.*)\\.png": "icon-192.png",
+      "icon-512\\.(.*)\\.png": "icon-512.png"
+    }
   },
   "targets": {
     "default": {
