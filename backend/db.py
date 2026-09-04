@@ -29,6 +29,17 @@ class User(Base):
     auth_methods: Mapped[list["AuthMethod"]] = relationship(
         back_populates="user", cascade="all, delete-orphan"
     )
+    texts: Mapped[list["Textus"]] = relationship(back_populates="owner")
+
+
+class Textus(Base):
+    __tablename__ = "texts"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    title: Mapped[str] = mapped_column(String(1024))
+    content: Mapped[str] = mapped_column(Text)
+    owner_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"))
+
+    owner: Mapped[User] = relationship(back_populates="texts")
 
 
 class AuthMethod(Base):
