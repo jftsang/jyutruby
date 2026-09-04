@@ -1,3 +1,6 @@
 [submodule "src/CantoJpMin"]
 	path = src/CantoJpMin
 	url = https://github.com/jftsang/CantoJpMin/
+[submodule "src/kangxi-dictionary"]
+	path = src/kangxi-dictionary
+	url = https://github.com/samsonhoi/kangxi-dictionary
