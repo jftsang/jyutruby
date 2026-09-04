@@ -1,18 +1,21 @@
+/// <reference path="../tsconfig.sw.json" />
 const CACHE = 'v2';
 const PRECACHE = ['/'];
 const API_PREFIX = '/api/';
 
-self.addEventListener('install', e => {
+const sw = self as unknown as ServiceWorkerGlobalScope;
+
+sw.addEventListener('install', e => {
   e.waitUntil(
-    caches.open(CACHE).then(c => c.addAll(PRECACHE)).then(() => self.skipWaiting())
+    caches.open(CACHE).then(c => c.addAll(PRECACHE)).then(() => sw.skipWaiting())
   );
 });
 
-self.addEventListener('activate', e => {
+sw.addEventListener('activate', e => {
   e.waitUntil(
     caches.keys()
       .then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k))))
-      .then(() => self.clients.claim())
+      .then(() => sw.clients.claim())
   );
 });
 
@@ -42,7 +45,7 @@ async function staleWhileRevalidate(request) {
   return cached || (await network);
 }
 
-self.addEventListener('fetch', e => {
+sw.addEventListener('fetch', e => {
   const { request } = e;
   const url = new URL(request.url);
 

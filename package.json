@@ -6,6 +6,7 @@
     "build": "npx parcel build src/index.html src/sw.ts",
     "dev": "npx parcel watch src/index.html src/sw.ts",
     "devserver": "npx parcel serve src/index.html src/sw.ts --port 1234",
+    "typecheck": "npx tsc -p . --noEmit && npx tsc -p tsconfig.sw.json --noEmit",
     "clean": "node -e \"fs.rmSync('dist',{recursive:true,force:true});fs.rmSync('.parcel-cache',{recursive:true,force:true})\""
   },
   "parcel-namer-rewrite": {
