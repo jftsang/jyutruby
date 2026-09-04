@@ -5,6 +5,8 @@ $secondary: darkred;
 //$nav-tabs-border-width: 2px;
 $nav-link-padding-y: 0.2rem;
 $nav-tabs-border-radius: 0;
+$form-select-border-radius: 2px;
+$form-select-line-height: 1rem;
 $nav-tabs-link-color: black;
 $nav-tabs-link-hover-color: black;
 $nav-tabs-link-active-color: black;
@@ -179,11 +181,12 @@ div #reader {
   display: flex;
   gap: 10px;
   margin-bottom: 20px;
+  padding-top: 3rem;
+  padding-bottom: 0.5rem;
   align-items: center;
   position: sticky;
   top: 0;
   z-index: 999;
-  padding-top: 2rem;
   color: silver;
   background-image: url('./wood.jpg');
 
