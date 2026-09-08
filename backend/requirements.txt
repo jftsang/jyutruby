@@ -5,3 +5,4 @@ alembic
 jinja2
 webauthn
 itsdangerous
+python-dotenv
