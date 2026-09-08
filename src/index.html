@@ -15,7 +15,7 @@
   <meta property="og:url" content="https://jftsang.github.io/jyutruby">
   <meta name="twitter:card" content="summary_large_image">
 
-  <script>navigator.serviceWorker?.register('./sw.js')</script>
+  <script>if (location.hostname !== 'localhost') navigator.serviceWorker?.register('./sw.js')</script>
 </head>
 <body>
 
