@@ -55,9 +55,16 @@ The backend serves the UI from `dist/` at `/`; auth pages live at `/login` and
 
 ## Testing
 
-- No test suite is set up yet. Backend smoke checks can be run ad hoc against the
-  FastAPI app (e.g. with a small `TestClient` script). If tests are added, place
-  them under `backend/tests/` and use this section to document the command.
+Run the pytest suite (backend endpoints) from the repo root:
+
+```sh
+uv run pytest
+```
+
+Tests live in `backend/tests/`. `pytest` and `httpx2` are dev dependencies.
+`conftest.py` redirects `DATABASE_URL` to a throwaway SQLite file, creates the
+schema once per run, and wipes table data between tests, so the dev database is
+never touched.
 
 ## Conventions
 

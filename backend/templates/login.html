@@ -8,8 +8,10 @@
   {% else %}
   <h1>Log in</h1>
   <form id="login">
-    <label>Username <input type="text" id="username" autocomplete="username" required></label>
-    <button type="submit">Log in with passkey</button>
+    <label>Username <input type="text" id="username" autocomplete="username" required></label><br>
+    <button type="submit" id="btn-passkey">Log in with passkey</button><br>
+    <label>Password <input type="password" id="password" autocomplete="current-password"></label>
+    <button type="button" id="btn-password">Log in with password</button><br>
   </form>
   <p id="status"></p>
 
@@ -51,6 +53,29 @@
         clientExtensionResults: cred.getClientExtensionResults ? cred.getClientExtensionResults() : {}
       };
     }
+
+    document.getElementById('btn-password').addEventListener('click', async () => {
+      const status = document.getElementById('status');
+      const password = document.getElementById('password').value;
+      if (!password) {
+        status.textContent = 'Error: Password is required';
+        return;
+      }
+      const res = await fetch('/api/auth/password/login', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          username: document.getElementById('username').value.trim(),
+          password
+        })
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        status.textContent = 'Error: ' + (data.detail || 'login failed');
+        return;
+      }
+      status.textContent = 'Logged in! Redirecting...';
+      window.location.href = '/';
+    });
 
     document.getElementById('login').addEventListener('submit', async (e) => {
       e.preventDefault();

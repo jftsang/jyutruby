@@ -23,6 +23,7 @@ class User(Base):
     __tablename__ = "users"
 
     id: Mapped[int] = mapped_column(primary_key=True)
+    username: Mapped[str] = mapped_column(String(255), unique=True)
     display_name: Mapped[str] = mapped_column(String(255))
     created_at: Mapped[str] = mapped_column(String, server_default="CURRENT_TIMESTAMP")
 

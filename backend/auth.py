@@ -1,11 +1,14 @@
 import base64
+import re
 import secrets
 import typing
 
+import bcrypt
 import fastapi
 from fastapi import Depends, HTTPException
 from itsdangerous import BadSignature, SignatureExpired, URLSafeTimedSerializer
 from pydantic import BaseModel
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 from webauthn import (
     base64url_to_bytes,
@@ -55,6 +58,38 @@ class VerifyLoginRequest(BaseModel):
     response: typing.Any
 
 
+_USERNAME_RE = re.compile(r"^[a-zA-Z0-9_]+$")
+
+
+class PasswordRegisterRequest(BaseModel):
+    username: str
+    display_name: str = ""
+    password: str
+
+    @staticmethod
+    def validate_username(username: str) -> str | None:
+        """Return None if valid, or an error message."""
+        if not username:
+            return "Username is required"
+        if len(username) > 255:
+            return "Username is too long"
+        if not _USERNAME_RE.match(username):
+            return "Username must contain only letters, numbers, and underscores"
+        return None
+
+    @staticmethod
+    def validate_password(password: str) -> str | None:
+        """Return None if valid, or an error message. Extend later with policy."""
+        if not password:
+            return "Password is required"
+        return None
+
+
+class PasswordLoginRequest(BaseModel):
+    username: str
+    password: str
+
+
 def _get_current_user_id(request: fastapi.Request) -> int | None:
     token = request.cookies.get(COOKIE_NAME)
     if not token:
@@ -81,9 +116,16 @@ def _set_session(response: fastapi.Response, user_id: int) -> None:
 def webauthn_register_options(
     body: RegistrationOptionsRequest, db: Session = Depends(get_db)
 ) -> dict:
-    username = body.username.strip()
-    if not username:
-        raise HTTPException(status_code=400, detail="Username is required")
+    username = body.username.strip().lower()
+    validation_error = PasswordRegisterRequest.validate_username(username)
+    if validation_error:
+        raise HTTPException(status_code=400, detail=validation_error)
+
+    existing = (
+        db.query(User).filter(func.lower(User.username) == username).first()
+    )
+    if existing is not None:
+        raise HTTPException(status_code=409, detail="Username is already taken")
 
     challenge_id = secrets.token_urlsafe(32)
     options = generate_registration_options(
@@ -100,6 +142,7 @@ def webauthn_register_options(
     _PENDING[challenge_id] = {
         "step": "register",
         "username": username,
+        "display_name": body.display_name.strip() or username,
         "challenge": options.challenge,
     }
     return {"challenge_id": challenge_id, "options": options_to_json(options)}
@@ -126,7 +169,13 @@ def webauthn_register_verify(
             status_code=400, detail=f"Registration failed: {exc}"
         ) from exc
 
-    user = User(display_name=pending["username"])
+    user = (
+        db.query(User).filter(User.username == pending["username"]).first()
+    )
+    if user is not None:
+        raise HTTPException(status_code=409, detail="Username is already taken")
+
+    user = User(username=pending["username"], display_name=pending["display_name"])
     db.add(user)
     db.flush()
     credential_public_key = verified.credential_public_key
@@ -154,11 +203,13 @@ def webauthn_register_verify(
 def webauthn_login_options(
     body: LoginOptionsRequest, db: Session = Depends(get_db)
 ) -> dict:
-    username = body.username.strip()
+    username = body.username.strip().lower()
     if not username:
         raise HTTPException(status_code=400, detail="Username is required")
 
-    user = db.query(User).filter(User.display_name == username).first()
+    user = (
+        db.query(User).filter(func.lower(User.username) == username).first()
+    )
     if user is None:
         raise HTTPException(status_code=404, detail="Unknown user")
 
@@ -244,6 +295,80 @@ def webauthn_login_verify(
     return response
 
 
+@router.post("/api/auth/password/register")
+def password_register(
+    body: PasswordRegisterRequest, db: Session = Depends(get_db)
+) -> fastapi.responses.JSONResponse:
+    username = body.username.strip().lower()
+    validation_error = PasswordRegisterRequest.validate_username(username)
+    if validation_error:
+        raise HTTPException(status_code=400, detail=validation_error)
+
+    password_error = PasswordRegisterRequest.validate_password(body.password)
+    if password_error:
+        raise HTTPException(status_code=400, detail=password_error)
+
+    existing = (
+        db.query(User).filter(func.lower(User.username) == username).first()
+    )
+    if existing is not None:
+        raise HTTPException(status_code=409, detail="Username is already taken")
+
+    password_hash = bcrypt.hashpw(body.password.encode("utf-8"), bcrypt.gensalt())
+    display_name = body.display_name.strip() or username
+
+    user = User(username=username, display_name=display_name)
+    db.add(user)
+    db.flush()
+    db.add(
+        AuthMethod(
+            user_id=user.id,
+            type="password",
+            identifier=username,
+            secret_hash=password_hash.decode("utf-8"),
+        )
+    )
+    db.commit()
+    db.refresh(user)
+
+    response = fastapi.responses.JSONResponse(
+        content={"user_id": user.id}, status_code=201
+    )
+    _set_session(response, user.id)
+    return response
+
+
+@router.post("/api/auth/password/login")
+def password_login(
+    body: PasswordLoginRequest, db: Session = Depends(get_db)
+) -> fastapi.responses.JSONResponse:
+    username = body.username.strip().lower()
+    if not username:
+        raise HTTPException(status_code=400, detail="Username is required")
+
+    user = db.query(User).filter(User.username == username).first()
+    if user is None:
+        raise HTTPException(status_code=400, detail="Invalid username or password")
+
+    method = (
+        db.query(AuthMethod)
+        .filter(AuthMethod.user_id == user.id, AuthMethod.type == "password")
+        .first()
+    )
+    if method is None or method.secret_hash is None:
+        raise HTTPException(
+            status_code=400,
+            detail="This account has no password. Try logging in with a passkey.",
+        )
+
+    if not bcrypt.checkpw(body.password.encode("utf-8"), method.secret_hash.encode("utf-8")):
+        raise HTTPException(status_code=400, detail="Invalid username or password")
+
+    response = fastapi.responses.JSONResponse(content={"user_id": user.id})
+    _set_session(response, user.id)
+    return response
+
+
 @router.get("/api/auth/me")
 def me(request: fastapi.Request, db: Session = Depends(get_db)):
     user_id = _get_current_user_id(request)
@@ -252,7 +377,7 @@ def me(request: fastapi.Request, db: Session = Depends(get_db)):
     user = db.get(User, user_id)
     if user is None:
         raise HTTPException(status_code=401, detail="Unknown user")
-    return {"user_id": user.id, "display_name": user.display_name}
+    return {"user_id": user.id, "username": user.username, "display_name": user.display_name}
 
 
 @router.post("/api/auth/logout")

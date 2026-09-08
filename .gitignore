@@ -6,4 +6,5 @@ __pycache__
 dist/
 node_modules
 .parcel-cache
+.pytest_cache
 backend/*.db

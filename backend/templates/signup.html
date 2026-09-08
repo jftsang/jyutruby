@@ -9,8 +9,10 @@
   <h1>Sign up</h1>
   <form id="signup">
     <label>Username <input type="text" id="username" autocomplete="username" required></label>
-    <label>Display name <input type="text" id="display_name"></label>
-    <button type="submit">Create account with passkey</button>
+    <label>Display name <input type="text" id="display_name"></label><br>
+    <button type="submit" id="btn-passkey">Create account with passkey</button><br>
+    <label>Password <input type="password" id="password" autocomplete="new-password"></label>
+    <button type="button" id="btn-password">Create account with password</button><br>
   </form>
   <p id="status"></p>
 
@@ -56,6 +58,30 @@
         clientExtensionResults: cred.getClientExtensionResults ? cred.getClientExtensionResults() : {}
       };
     }
+
+    document.getElementById('btn-password').addEventListener('click', async () => {
+      const status = document.getElementById('status');
+      const password = document.getElementById('password').value;
+      if (!password) {
+        status.textContent = 'Error: Password is required';
+        return;
+      }
+      const res = await fetch('/api/auth/password/register', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          username: document.getElementById('username').value.trim(),
+          display_name: document.getElementById('display_name').value.trim(),
+          password
+        })
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        status.textContent = 'Error: ' + (data.detail || 'registration failed');
+        return;
+      }
+      status.textContent = 'Account created! Redirecting...';
+      window.location.href = '/';
+    });
 
     document.getElementById('signup').addEventListener('submit', async (e) => {
       e.preventDefault();
