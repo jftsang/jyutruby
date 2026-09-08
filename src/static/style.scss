@@ -26,7 +26,7 @@ $table-bg: transparent;
 }
 
 body {
-  background-image: url('./smaller-background.png');
+  background-image: url('./background.webp');
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -44,7 +44,7 @@ body {
   top: 0;
   border-bottom: 0;
   z-index: 1000;
-  background-image: url('./wood.jpg');
+  background-image: url('./wood.webp');
 
   .nav-link:not(.active) {
     background-color: silver;
@@ -174,7 +174,7 @@ div #reader {
   width: 100%;
   field-sizing: content;
   min-height: 4rem; /* Optional: prevents default single-line height */
-  background-image: url('./smaller-background.png');
+  background-image: url('./background.webp');
 }
 
 #readerOptionsBar {
@@ -188,7 +188,7 @@ div #reader {
   top: 0;
   z-index: 999;
   color: silver;
-  background-image: url('./wood.jpg');
+  background-image: url('./wood.webp');
 
   @media (max-width: 768px) {
     position: static;
@@ -200,7 +200,7 @@ footer {
   padding-top: 0.5rem;
   z-index: 999;
   color: silver;
-  background-image: url('./wood.jpg');
+  background-image: url('./wood.webp');
 
   a { color: silver; }
 }
