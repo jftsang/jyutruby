@@ -1,4 +1,4 @@
-import {AppMode, AppState, User, defaultInitialState} from "./state.js";
+import {AppMode, AppState, User, defaultInitialState, loadDefaultText} from "./state.js";
 import {loadFromStorage, stateSaver} from "./storage.js";
 import editingView from "./editingView.js";
 import readerView from "./readerView.js";
@@ -19,11 +19,15 @@ const actions: Record<string, Action> = {
   setAppMode: (state: AppState, newMode: AppMode): AppState => {
     return {...state, appMode: newMode};
   },
+  setDefaultText: (state: AppState, defaultText: string): AppState => {
+    return {...state, inputText: defaultText};
+  },
   resetAppState: (state: AppState): AppState => {
     if (!confirm('Are you sure you want to reset the app?')) {
       return state;
     }
 
+    loadDefaultText().then(text => dispatchRef(actions.setDefaultText, text));
     return defaultInitialState;
   },
   setUser: (state: AppState, user: User | null): AppState => {
@@ -154,6 +158,10 @@ function view(state: AppState): ElementVNode<AppState> {
 }
 
 fetchAuthUser();
+
+if (!initialState.inputText) {
+  loadDefaultText().then(text => dispatchRef(actions.setDefaultText, text));
+}
 
 app({
   node: document.getElementById('app') as HTMLElement,

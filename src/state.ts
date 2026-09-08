@@ -1,5 +1,4 @@
 import {FlashcardState} from "./flashcardView.js";
-import {defaultText} from "./defaultText.js";
 
 export enum DisplayMode {
     showingAll,
@@ -47,10 +46,15 @@ export function toggle<T>(set: Set<T>, x: T): void {
         set.add(x)
 }
 
+export async function loadDefaultText(): Promise<string> {
+    const mod = await import("./defaultText.js");
+    return mod.defaultText;
+}
+
 export const defaultInitialState: AppState = {
   user: null,
   authAvailable: false,
-  inputText: defaultText,
+  inputText: "",
   savedCharacters: new Set(['繁','體','简','体']),
   appMode: AppMode.reading,
   displayMode: DisplayMode.showingSaved,
